@@ -18,72 +18,8 @@ xcor <- polychoric(ydmes01[,matrix_names])$rho
 VSS.scree(xcor)
 eigen(xcor)$values[1]/eigen(xcor)$values[2]
 
-
-################### TRAUMA ################### 
-#abcd_ptsd01
-ptsd01 = load_instrument("abcd_ptsd01",exposome_files_path)
-
-ptsd01_baseline = ptsd01[which(grepl("baseline", ptsd01$eventname)),]
-ptsd01_first_year = ptsd01[which(grepl("1_year_follow_up", ptsd01$eventname)),]
-
-#update first year names
-# colnames(ptsd01_first_year)[c(2,3)] = paste0(colnames(ptsd01_first_year)[c(2,3)], "_1_year")
-
-
-########### School Risk and Protective Factors ########### 
-srpf01 = load_instrument("srpf01",exposome_files_path)
-summary(srpf01)
-
-
-########### Youth Family Environment Scale: Family Conflict Subscale ########### 
-fes01 = load_instrument("abcd_fes01",exposome_files_path)
-
-
-########### Parent Family Environment Scale: Family Conflict Subscale ########### 
-fes02 = load_instrument("fes02",exposome_files_path)
-fes02 = unique(fes02)
-
-fes02 = fes02[, !(colnames(fes02) %in% c("fam_enviro_select_language___1"))]
-
-
-########### Parental Monitoring Survey ########### 
-pmq01 = load_instrument("pmq01",exposome_files_path)
-summary(pmq01)
-
-
-########### Youth Neighborhood Safety/Crime ########### 
-nsc01 = load_instrument("abcd_nsc01",exposome_files_path)
-
-
-########### Parent Neighborhood Safety/Crime ########### 
-pnsc01 = load_instrument("abcd_pnsc01",exposome_files_path)
-pnsc01 = pnsc01[, !(colnames(pnsc01) %in% c("nei_p_select_language___1"))]
-
-
-
-########### Parent Family History Summary Scores ########### 
-fhxssp = load_instrument("abcd_fhxssp01",exposome_files_path)
-
-#TODO check for each time point
-#remove columns with more than 20% NA
-# fhxssp = fhxssp[,-which(colSums(is.na(fhxssp)) >= 0.2*dim(fhxssp)[1])]
-
-summary(fhxssp)
-
-########### Youth Life Events ###########
-yle01 = load_instrument("abcd_yle01",exposome_files_path)
-
-summary(droplevels(yle01[yle01$eventname == "1_year_follow_up_y_arm_1",]))
-
-
-########### Parent Life Events ########### 
-ple = load_instrument("abcd_ple01",exposome_files_path)
-ple = ple[, !(colnames(ple) %in% c("ple_p_select_language___1"))]
-
-
-# ple = ple[ple$eventname == "1_year_follow_up_y_arm_1",]
-# ple = ple[,-which(colSums(is.na(ple)) >= 0.2*dim(ple)[1])]
-summary(droplevels(ple))
+#select variables
+ydmes01 = ydmes01[,grepl("src|interview|event|sex|dim_yesno_q4",colnames(ydmes01))]
 
 
 ########### family relationship section ########### 
@@ -91,142 +27,38 @@ acspsw03 = load_instrument("acspsw03",exposome_files_path)
 
 summary(acspsw03)
 
+#select variables
+acspsw03 = acspsw03[,grepl("src|interview|event|^sex|rel_family_id",colnames(acspsw03))]
+
+########## youth life events ########### 
+yle = load_instrument("abcd_yle01",exposome_files_path)
+
+yle = yle[,!grepl("_(fu|fu2|yr)_y$",colnames(yle))]
 
 
-########### Parent Community Risk and Protective Factors ########### 
-crpf = load_instrument("abcd_crpf01",exposome_files_path)
-
-crpf[crpf == 999] = NA
-crpf = crpf[, !(colnames(crpf) %in% c("su_select_language___1"))]
-
-#TODO check for each time point
-#remove columns with more than 20% NA
-# crpf = crpf[,-which(colSums(is.na(crpf)) >= 0.2*dim(crpf)[1])]
-
-summary(droplevels(crpf))
-
-
-
-########### Developmental History ########### 
+########## developmental history ########### 
 dhx01 = load_instrument("dhx01",exposome_files_path)
 
-dhx01[dhx01 == 999 | dhx01 == -1] = NA
-dhx01 = dhx01[, !(colnames(dhx01) %in% c("accult_select_language"))]
+#select variables
+dhx01 = dhx01[,grepl("src|interview|event|sex|devhx_(3|4)_p$",colnames(dhx01))]
 
-#TODO check for each time point
-#remove columns with more than 20% NA
-# dhx01 = dhx01[,-which(colSums(is.na(dhx01)) >= 0.2*dim(dhx01)[1])]
+#remove outliers
+dhx01$devhx_3_p = as.numeric(as.character(dhx01$devhx_3_p))
+dhx01$devhx_3_p[dhx01$devhx_3_p > 55] = NA
 
-summary(droplevels(dhx01))
-
-
-########### Longitudinal Parent Sports and Activities Involvement Questionnaire ########### 
-lpsaiq = load_instrument("abcd_lpsaiq01",exposome_files_path)
-
-lpsaiq[lpsaiq == 999] = NA
-lpsaiq = lpsaiq[, !(colnames(lpsaiq) %in% c("sai_l_p_select_language___1"))]
-
-#TODO check for each time point
-#remove columns with more than 20% NA
-# lpsaiq = lpsaiq[,-which(colSums(is.na(lpsaiq)) >= 0.2*dim(lpsaiq)[1])]
-summary(droplevels(lpsaiq))
-
-
-########### Parent Multi-Group Ethnic Identity-Revised Survey ########### 
-meim = load_instrument("abcd_meim01",exposome_files_path)
-
-#remove empty columns
-meim = meim[,colSums(is.na(meim)) != dim(meim)[1]]
-summary(droplevels(meim))
-
-
-########### Youth Screen Time Survey ########### 
-stq = load_instrument("abcd_stq01",exposome_files_path)
-stq = stq[,!grepl("___", colnames(stq))]
-
-summary(droplevels(stq))
-
-
-########### Youth Screen Time Survey ########### 
-crpbi = load_instrument("crpbi01",exposome_files_path)
-crpbi = crpbi[, !(colnames(crpbi) %in% c("timept"))]
-
-summary(crpbi[crpbi$eventname == "1_year_follow_up_y_arm_1",])
-
-
-########### Parent Mexican American Cultural Values Scale Modified ########### 
-macv = load_instrument("macv01",exposome_files_path)
-macv = macv[, !(colnames(macv) %in% c("mex_american_select_lang_1"))]
-
-
-########### Parent Acculturation Survey ########### 
-pacc = load_instrument("pacc01",exposome_files_path)
-pacc = pacc[, !(colnames(pacc) %in% c("accult_select_language___1"))]
-
-#remove empty columns
-pacc = pacc[, colSums(is.na(pacc)) != dim(pacc)[1]]
-
-pacc[pacc == 777 | pacc == 999] = NA
-
-########### Parent Adult Self Report Raw Scores Aseba ########### 
-pasr = load_instrument("pasr01",exposome_files_path)
-pasr = pasr[, !(colnames(pasr) %in% c("asr_select_language___1"))]
-
-
-########### Parental Rules on Substance Use ########### 
-prq = load_instrument("prq01",exposome_files_path)
-prq = prq[, !(colnames(prq) %in% c("pr_select_language___1"))]
-
-#TODO check for each time point
-#remove columns with more than 20% NA
-# prq = droplevels(prq[prq$eventname == "1_year_follow_up_y_arm_1",])
-# prq = prq[,-which(colSums(is.na(prq)) >= 0.2*dim(prq)[1])]
-
-
-########### Parent Screen Time Survey ########### 
-stq = load_instrument("stq01",exposome_files_path)
-stq = stq[, !(colnames(stq) %in% c("scrtime_p_select_lang___1"))]
-
-#TODO check for each time point
-#remove columns with more than 20% NA
-# stq = droplevels(stq[stq$eventname == "1_year_follow_up_y_arm_1",])
-# stq = stq[,-which(colSums(is.na(stq)) >= 0.2*dim(stq)[1])]
-
-
-########### Youth Acculturation Survey Modified from PhenX (ACC) ########### 
-yacc = load_instrument("yacc01",exposome_files_path)
-yacc[yacc == 777] = NA
-
-#TODO check for each time point
-#remove columns with more than 20% NA
-# yacc = droplevels(yacc[yacc$eventname == "1_year_follow_up_y_arm_1",])
-# yacc = yacc[,-which(colSums(is.na(yacc)) >= 0.2*dim(yacc)[1])]
-
-
-########### Child Nutrition Assessment ########### 
-cna = load_instrument("abcd_cna01",exposome_files_path)
-cna[cna == 999] = NA
-cna = cna[, !(colnames(cna) %in% c("cna_p_select_language___1"))]
-
-
-
-########### Parent Ohio State Traumatic Brain Injury Screen ########### 
-otbi = load_instrument("abcd_otbi01",exposome_files_path)
-otbi = otbi[, !(colnames(otbi) %in% c("tbi_select_language___1"))]
-
-#remove empty columns
-otbi = otbi[, colSums(is.na(otbi)) != dim(otbi)[1]]
+dhx01$devhx_4_p = as.numeric(as.character(dhx01$devhx_4_p))
+dhx01$devhx_4_p[dhx01$devhx_4_p > 80] = NA
 
 
 
 
+exposome_baseline = merge(acspsw03,dhx01)
+write.csv(file = "outputs/exposome_baseline.csv",x = exposome_baseline, row.names = F, na = "")
 
-########### merge all tables
-exposome_set = merge(srpf01,pmq01)
-exposome_set = merge(exposome_set,yle01)
-exposome_set = merge(exposome_set,fes01)
-exposome_set = merge(exposome_set,nsc01)
-exposome_set = merge(exposome_set,pnsc01)
+exposome_1year = merge (ydmes01,yle)
+write.csv(file = "outputs/exposome_1year.csv",x = exposome_1year, row.names = F, na = "")
+
+
 
 
 

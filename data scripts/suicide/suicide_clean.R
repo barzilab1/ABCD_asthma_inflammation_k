@@ -85,4 +85,6 @@ suicide_firstyear_ontopof_baseline = merge(suicide_set_baseline, suicide_set_1_y
 write.csv(file = "outputs/suicide_firstyear_ontopof_baseline.csv",x = suicide_firstyear_ontopof_baseline,row.names=F, na = "")
 # write.csv(file = "suicide/outputs/suicide_firstyear_ontopof_baseline_grant.csv",x = suicide_firstyear_ontopof_baseline,row.names=F, na = "")
 
+write.csv(file = "outputs/suicide_baseline.csv",x = suicide_set_baseline,row.names=F, na = "")
 
+write.csv(file = "outputs/suicide_1year.csv",x = suicide_set_1_year_follow,row.names=F, na = "")

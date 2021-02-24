@@ -89,7 +89,7 @@ demographics_set = droplevels(demographics_set)
 
 
 
-write.csv(file = "outputs/demographics_longitudinal.csv.csv",x = demographics_set[,c("src_subject_id", "interview_date", "interview_age", "demo_prim" , "eventname", "sex",
+write.csv(file = "outputs/demographics_longitudinal.csv",x = demographics_set[,c("src_subject_id", "interview_date", "interview_age", "demo_prim" , "eventname", "sex",
                                                                                                 "demo_ed_v2_l", 
                                                                                                 "household_income","demo_prnt_ed_v2_l", "demo_prtnr_ed_v2_l", "parents_avg_edu", 
                                                                                                 "demo_prnt_marital_v2_l", "separated_or_divorced", "parents_married",

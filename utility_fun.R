@@ -2,7 +2,7 @@ library(readr)
 
 load_instrument <- function(file_name, file_path) {
   
-  instrument = read.csv(file = paste0(file_path,file_name,".txt"), sep = '\t',header = TRUE, 	row.names=NULL, na.string = c("","NA"), check.names=FALSE)
+  instrument = read.csv(file = paste0(file_path,file_name,".txt"), sep = '\t',header = TRUE, 	row.names=NULL, na.string = c("","NA"), check.names=FALSE, colClasses=c('factor'))
   
   #remove details line
   instrument=instrument[-1,]

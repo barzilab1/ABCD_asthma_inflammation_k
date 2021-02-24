@@ -31,17 +31,16 @@ ksad_y_diagnosis$diagnosis_sleep_y = apply(ksad_y_diagnosis[,grepl("ksads_22_.*_
 summary(ksad_y_diagnosis[ksad_y_diagnosis$eventname == "baseline_year_1_arm_1",]) 
 summary(ksad_y_diagnosis[ksad_y_diagnosis$eventname == "1_year_follow_up_y_arm_1",]) 
 
+
+#################### anhedonia symptoms #################### 
+ksad_y_anhedonia = ksad_y[,grepl("src|inter|event|sex|ksads_1_5_t|ksads_1_6_t",colnames(ksad_y))]
+
+ksad_y_anhedonia$symptom_anhedonia_y = apply(ksad_y_anhedonia[,grepl("ksads_1_5_t|ksads_1_6_t",colnames(ksad_y_anhedonia))],1 ,function(x) {any(x ==1)*1})
+
+
+
 write.csv(file = "outputs/ksad_y_diagnosis.csv",x = ksad_y_diagnosis, row.names=F, na = "")
 
-
-#################### internal symptoms #################### 
-
-ksad_y_symptoms = ksad_y[,grepl("src|inter|event|sex|ksads_(1|8|10)_([1-9]|[2-4][0-9]|1[5-8][0-9]|3[0-3][0-9])_|ksads_22_14[1-2]_",colnames(ksad_y))]
-ksad_y_symptoms = ksad_y_symptoms[,!(colnames(ksad_y_symptoms) %in% c("ksads_1_185_t","ksads_1_186_t","ksads_1_187_t","ksads_1_188_t","ksads_8_30_t" ,"ksads_10_330_t"))]
-
-summary(ksad_y_symptoms[ksad_y_symptoms$eventname == "baseline_year_1_arm_1",]) 
-summary(ksad_y_symptoms[ksad_y_symptoms$eventname == "1_year_follow_up_y_arm_1",]) 
-
-
-write.csv(file = "outputs/ksad_y_symptoms.csv",x = ksad_y_symptoms, row.names=F, na = "")
+ksad_y_kevin = merge(ksad_y_anhedonia,ksad_y_diagnosis)
+write.csv(file = "outputs/ksad_y_diagnosis_anhedonia.csv",x = ksad_y_kevin, row.names=F, na = "")
 

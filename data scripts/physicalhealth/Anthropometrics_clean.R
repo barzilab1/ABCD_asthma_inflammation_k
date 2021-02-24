@@ -50,7 +50,7 @@ BMI_dataset$bmi_above_85p = (as.numeric(BMI_dataset$bmi_percentiles) >= 85)*1
 # BMI_dataset$exact_percentile = round(100 * pnorm(BMI_dataset$bz),2)
 
 
-write.csv(file = "outputs/ABCD_BMI.csv",x = BMI_dataset[,c("src_subject_id","interview_date","interview_age","sex","eventname",
+write.csv(file = "outputs/anthropometrics.csv",x = BMI_dataset[,c("src_subject_id","interview_date","interview_age","sex","eventname",
                                                                           "anthroweightcalc", "anthroheightcalc", "anthro_waist_cm",
                                                                           "BMI","bmi_above_85p","bmi_above_95p", "bmi_percentiles")],
                                                       row.names=F, na = "")
