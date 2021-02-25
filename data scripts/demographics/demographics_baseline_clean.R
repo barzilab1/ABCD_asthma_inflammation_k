@@ -116,16 +116,6 @@ demographics_set[,living_with_partenr_or_married := 0]
 demographics_set[(demo_prnt_marital_v2 %in% c(1,6)), living_with_partenr := 1]
 demographics_set[is.na(demo_prnt_marital_v2), living_with_partenr := NA]
 
-######## both parents immgretation
-# 1. if demo_prnt_16 == 0 ==> immgration = 0
-# 2. go over prim feature and update immgration accordenglly 
-# not clear what to do with demo_prim == 3
-# demographics_set[demo_prnt_16 == 0 ,parents_immigrants := 0]
-# demographics_set[demo_prnt_16 == 1 & demo_prim == 1 & demo_prnt_origin_v2 != 189 & demo_biofather_v2 != 189 ,parents_immigrants := 1]
-# demographics_set[demo_prnt_16 == 1 & demo_prim == 2 & demo_prnt_origin_v2 != 189 & demo_biomother_v2 != 189 ,parents_immigrants := 1]
-# demographics_set[demo_prnt_16 == 1 & demo_prim == 3 & demo_prnt_origin_v2 != 189 & demo_biomother_v2 != 189 ,parents_immigrants := 1]
-
-
 
 demographics_set = droplevels(demographics_set)
 
@@ -137,8 +127,9 @@ demographics_set [, c("demo_adopt_agex_v2_bl_dk","demo_years_us_v2_dk" ) := NULL
 demographics_set[demo_roster_v2 %in% c(60,77), demo_roster_v2:= NA]
 
 write.csv(file = "outputs/demographics_baseline_full.csv",x = demographics_set[,c("src_subject_id", "interview_date", "interview_age", "demo_prim" , "eventname", "sex",
-                                                                                           "demo_ed_v2", "race_white", "race_black", "race_aian", "race_nhpi", "race_asian", "race_other","race_mixed" ,"ethnicity_hisp", 
-                                                                                           "born_in_usa","demo_prnt_marital_v2", "household_income", "demo_roster_v2", "age", "sex_br", "gender", "parents_avg_edu", "parents_married", "separated_or_divorced")], row.names=F, na = "")
+                                                                                  "demo_ed_v2", "race_white", "race_black", "race_aian", "race_nhpi", "race_asian", "race_other","race_mixed" ,"ethnicity_hisp", 
+                                                                                  "born_in_usa", "household_income", "demo_roster_v2", "age", "sex_br", "gender", 
+                                                                                  "parents_avg_edu", "parents_married", "separated_or_divorced", "living_with_partenr_or_married")], row.names=F, na = "")
 
 
 

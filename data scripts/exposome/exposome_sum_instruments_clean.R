@@ -6,15 +6,12 @@ source("utility_fun.R")
 sscey01 = load_instrument("abcd_sscey01",exposome_files_path)
 
 #remove nt (Number Total Questions) and nm (Number Missing Answers) and na (Number Answered)
-sscey01 = sscey01[,!grepl("_(nm|nt|na|answered)$",colnames(sscey01))] #pr
-
-
-# sscey01$school_protective_factors = as.numeric(as.character(sscey01$srpf_y_ss_ses)) + as.numeric(as.character(sscey01$srpf_y_ss_iiss))
+sscey01 = sscey01[,!grepl("_(nm|nt|na|answered|pr|dfs)$",colnames(sscey01))] 
 
 summary(droplevels(sscey01))
 
 # select variables
-sscey01 = sscey01[,grepl("src|interview|event|sex|fes_y_ss_fc$|crpbi_y_ss_(parent$|caregiver$)",colnames(sscey01))]
+sscey01 = sscey01[,grepl("src|interview|event|sex|fes|pmq|crpbi|srpf",colnames(sscey01))]
 
 
 ########### Longitudinal Summary Scores Sports Activity ########### 
@@ -25,18 +22,13 @@ lsssa[lsssa == 999] = NA
 lsssa = lsssa[,colSums(is.na(lsssa)) != dim(lsssa)[1]]
 summary(droplevels(lsssa))
 
-# how to treat variables?
 
 ########### ABCD Sum Scores Mobil Tech Youth ########### 
 ssmty = load_instrument("abcd_ssmty01",exposome_files_path)
 
-#remove empty columns
-ssmty = ssmty[,colSums(is.na(ssmty)) != dim(ssmty)[1]]
-summary(droplevels(ssmty))
-
 #select variables
-ssmty = ssmty[,grepl("src|interview|event|sex|stq_y_ss_(weekday$|weekend$)",colnames(ssmty))]
-
+ssmty = ssmty[,grepl("src|interview|event|sex|(weekday|weekend)$",colnames(ssmty))]
+summary(droplevels(ssmty))
 
 
 # merge tables

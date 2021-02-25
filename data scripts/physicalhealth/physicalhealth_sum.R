@@ -23,16 +23,14 @@ ssphy = ssphy[,grepl("src|interview|event|sex|sds_p_ss_sbd$|cna_p_ss_sum$|pds_(.
 
 medhxss01 = load_instrument("abcd_medhxss01",physicalhealth_files_path)
 
-#remove empty columns 
-medhxss01 = medhxss01[,(colSums(is.na(medhxss01)) != dim(medhxss01)[1])]
-
 #select variables for immune study
-medhxss01 = medhxss01[,grepl("src|interview|event|sex|((6a|6l)_times_p)$",colnames(medhxss01))]
+medhxss01 = medhxss01[,grepl("src|interview|event|sex|6(a|l)_times_p$",colnames(medhxss01))]
+
+
 
 
 physicalhealth_sum_1year = merge(ssphp01,ssphy)
 write.csv(file = "outputs/physicalhealth_sum_1year.csv",x = physicalhealth_sum_1year, row.names = F, na = "")
-
 
 write.csv(file = "outputs/physicalhealth_sum_baseline.csv",x = medhxss01, row.names = F, na = "")
 

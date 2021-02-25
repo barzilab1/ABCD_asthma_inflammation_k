@@ -6,17 +6,8 @@ source("utility_fun.R")
 
 mx01 = load_instrument("abcd_mx01",physicalhealth_files_path)
 
-#continuous variables - remove outliers (replace with NA)
-
 #select variables
 mx01 = mx01[,grepl("src|interview|event|sex|(2(a|b|d|g|m)|6(a|l))$",colnames(mx01))]
-
-
-########### ABCD Longitudinal Parent Medical History Questionnaire ########### 
-
-lpmh01 = load_instrument("abcd_lpmh01",physicalhealth_files_path)
-
-#not using in this study
 
 
 ########### ABCD Parent Pubertal Development Scale and Menstrual Cycle Survey History (PDMS) ########### 
