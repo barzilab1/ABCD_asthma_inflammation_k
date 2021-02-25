@@ -126,16 +126,10 @@ demographics_set [, c("demo_adopt_agex_v2_bl_dk","demo_years_us_v2_dk" ) := NULL
 #remove outliers of "number of household members" 
 demographics_set[demo_roster_v2 %in% c(60,77), demo_roster_v2:= NA]
 
-write.csv(file = "outputs/demographics_baseline_full.csv",x = demographics_set[,c("src_subject_id", "interview_date", "interview_age", "demo_prim" , "eventname", "sex",
+write.csv(file = "outputs/demographics_baseline.csv",x = demographics_set[,c("src_subject_id", "interview_date", "interview_age", "demo_prim" , "eventname", "sex",
                                                                                   "demo_ed_v2", "race_white", "race_black", "race_aian", "race_nhpi", "race_asian", "race_other","race_mixed" ,"ethnicity_hisp", 
                                                                                   "born_in_usa", "household_income", "demo_roster_v2", "age", "sex_br", "gender", 
                                                                                   "parents_avg_edu", "parents_married", "separated_or_divorced", "living_with_partenr_or_married")], row.names=F, na = "")
-
-
-
-write.csv(file = "outputs/demographics_baseline_short.csv",x = demographics_set[,c("src_subject_id", "interview_date", "interview_age", "eventname", "sex",
-                                                                                  "race_white", "race_black", "race_aian", "race_nhpi", "race_asian", "race_other","race_mixed" ,"ethnicity_hisp", 
-                                                                                  "born_in_usa")], row.names=F, na = "")
 
 
 

@@ -10,8 +10,6 @@ ksad_y[ksad_y == "888" | ksad_y == "555"] = NA
 
 ksad_y = droplevels(ksad_y)
 
-# ksad externalizing symptoms
-# externalize_ksad_y = ksad_y[,which(grepl("^(src|inter|event|sex|ksads_([1-3]|8|10|22)_(8|9)[0-9][0-9])", colnames(ksad_y)))]
 
 #################### internal diagnosis #################### 
 #all kids diagnosis
@@ -29,18 +27,15 @@ ksad_y_diagnosis$diagnosis_anxiety_y = apply(ksad_y_diagnosis[,grepl("ksads_(8|1
 ksad_y_diagnosis$diagnosis_sleep_y = apply(ksad_y_diagnosis[,grepl("ksads_22_.*_t", colnames(ksad_y_diagnosis))],1 ,function(x) {any(x == 1)*1})
 
 summary(ksad_y_diagnosis[ksad_y_diagnosis$eventname == "baseline_year_1_arm_1",]) 
-summary(ksad_y_diagnosis[ksad_y_diagnosis$eventname == "1_year_follow_up_y_arm_1",]) 
 
 
 #################### anhedonia symptoms #################### 
-ksad_y_anhedonia = ksad_y[,grepl("src|inter|event|sex|ksads_1_5_t|ksads_1_6_t",colnames(ksad_y))]
+ksad_y_anhedonia = ksad_y[,grepl("src|inter|event|sex|ksads_1_(5|6)_t",colnames(ksad_y))]
 
-ksad_y_anhedonia$symptom_anhedonia_y = apply(ksad_y_anhedonia[,grepl("ksads_1_5_t|ksads_1_6_t",colnames(ksad_y_anhedonia))],1 ,function(x) {any(x ==1)*1})
+ksad_y_anhedonia$symptom_anhedonia_y = apply(ksad_y_anhedonia[,grepl("ksads_",colnames(ksad_y_anhedonia))],1 ,function(x) {any(x ==1)*1})
 
 
+ksad_y_diagnosis_anhedonia = merge(ksad_y_anhedonia,ksad_y_diagnosis)
 
-write.csv(file = "outputs/ksad_y_diagnosis.csv",x = ksad_y_diagnosis, row.names=F, na = "")
-
-ksad_y_kevin = merge(ksad_y_anhedonia,ksad_y_diagnosis)
-write.csv(file = "outputs/ksad_y_diagnosis_anhedonia.csv",x = ksad_y_kevin, row.names=F, na = "")
+write.csv(file = "outputs/ksad_y_diagnosis_anhedonia.csv",x = ksad_y_diagnosis_anhedonia, row.names=F, na = "")
 

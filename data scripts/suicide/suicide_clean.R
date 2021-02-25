@@ -55,13 +55,10 @@ ksad_y$nssi_past_y = apply(ksad_y[,which(grepl("ksads_23_(956|966)", colnames(ks
 #create separte variables for baseline and 1 year follow up
 
 suicide_set = merge(ksad_y,ksad_p)
-suicide_set_baseline = suicide_set[which(grepl("baseline", suicide_set$eventname)),which(grepl("ksads_23_|src|inter|event|sex|SI|SA|sui", colnames(suicide_set)))]
-# suicide_set_1_year_follow = suicide_set[which(grepl("1_year_follow_up", suicide_set$eventname)),which(grepl("ksads_23_|src|inter|event|gender|SI|SA|sui", colnames(suicide_set)))]
+suicide_set_baseline = suicide_set[which(grepl("baseline", suicide_set$eventname)),which(grepl("ksads_23_|src|inter|event|sex|SI|SA|sui|nssi", colnames(suicide_set)))]
 
-write.csv(file = "outputs/suicide_baseline.csv",x = suicide_set_baseline,row.names=F, na = "")
-# write.csv(file = "suicide/outputs/suicide_1_year.csv",x = suicide_set_1_year_follow,row.names=F, na = "")
 
-suicide_set_1_year_follow = suicide_set[which(grepl("1_year_follow_up", suicide_set$eventname)),which(grepl("src|interview_a|sex|SI_|SA_|sui", colnames(suicide_set)))]
+suicide_set_1_year_follow = suicide_set[which(grepl("1_year_follow_up", suicide_set$eventname)),which(grepl("src|interview_a|sex|SI_|SA_|sui|nssi", colnames(suicide_set)))]
 
 suicide_set_1_year_follow$suicidality_current_1_year_p = (suicide_set_1_year_follow$SI_current_p == 1 | suicide_set_1_year_follow$SA_current_p == 1)*1
 suicide_set_1_year_follow$suicidality_current_1_year_y = (suicide_set_1_year_follow$SI_current_y == 1 | suicide_set_1_year_follow$SA_current_y == 1)*1
@@ -79,12 +76,11 @@ colnames(suicide_set_1_year_follow)[7] = "SA_current_1_year_y"
 colnames(suicide_set_1_year_follow)[8] = "SA_past_1_year_y"
 colnames(suicide_set_1_year_follow)[9] = "SA_1_year_y"
 colnames(suicide_set_1_year_follow)[10] = "suicidality_1_year_y"
+colnames(suicide_set_1_year_follow)[11] = "nssi_current_1_year_y"
+colnames(suicide_set_1_year_follow)[12] = "nssi_past_1_year_y"
 
 
 suicide_firstyear_ontopof_baseline = merge(suicide_set_baseline, suicide_set_1_year_follow , all.x = T)
 write.csv(file = "outputs/suicide_firstyear_ontopof_baseline.csv",x = suicide_firstyear_ontopof_baseline,row.names=F, na = "")
-# write.csv(file = "suicide/outputs/suicide_firstyear_ontopof_baseline_grant.csv",x = suicide_firstyear_ontopof_baseline,row.names=F, na = "")
 
-write.csv(file = "outputs/suicide_baseline.csv",x = suicide_set_baseline,row.names=F, na = "")
 
-write.csv(file = "outputs/suicide_1year.csv",x = suicide_set_1_year_follow,row.names=F, na = "")
