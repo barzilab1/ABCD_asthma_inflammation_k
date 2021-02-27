@@ -55,7 +55,7 @@ ksad_y$nssi_past_y = apply(ksad_y[,which(grepl("ksads_23_(956|966)", colnames(ks
 #create separte variables for baseline and 1 year follow up
 
 suicide_set = merge(ksad_y,ksad_p)
-suicide_set_baseline = suicide_set[which(grepl("baseline", suicide_set$eventname)),which(grepl("ksads_23_|src|inter|event|sex|SI|SA|sui|nssi", colnames(suicide_set)))]
+suicide_set_baseline = suicide_set[which(grepl("baseline", suicide_set$eventname)),which(grepl("ksads_23_9|src|inter|event|sex|SI|SA|sui|nssi", colnames(suicide_set)))]
 
 
 suicide_set_1_year_follow = suicide_set[which(grepl("1_year_follow_up", suicide_set$eventname)),which(grepl("src|interview_a|sex|SI_|SA_|sui|nssi", colnames(suicide_set)))]

@@ -1,29 +1,48 @@
-#' ############################################################
-#' Here should be all the merging of the different datasets. 
-#' as well as creation of additional variables that are specific to this project
-#' #############################################################
 
 library(readr)
 
-
-
-
-#' example of merging:
-#' 1. first read the datasets from the outputs folder 
 demographics_baseline <- read_csv("outputs/demographics_baseline.csv")
-family_set_baseline <- read_csv("outputs/family_set_baseline.csv")
+exposome_baseline <- read_csv("outputs/exposome_baseline.csv")
+geo_data_baseline <- read_csv("outputs/geo_data_baseline.csv")
+ksad_y_diagnosis_anhedonia <- read_csv("outputs/ksad_y_diagnosis_anhedonia.csv")
+asthma_inflammation_physicalhealth <- read_csv("outputs/asthma_inflammation_physicalhealth.csv")
+physicalhealth_sum_baseline <- read_csv("outputs/physicalhealth_sum_baseline.csv")
+exposome_sum_baseline <- read_csv("outputs/exposome_sum_baseline.csv")
+suicide_firstyear_ontopof_baseline <- read_csv("outputs/suicide_firstyear_ontopof_baseline.csv")
+medications <- read_csv("outputs/medications.csv", col_types = cols(.default = "n", 
+                                                                    "src_subject_id" = "c",
+                                                                    "med1_rxnorm_p" = "c",
+                                                                    "med3_rxnorm_p" = "c",
+                                                                    "med4_rxnorm_p" = "c",
+                                                                    "med7_rxnorm_p" = "c",
+                                                                    "med9_rxnorm_p" = "c",
+                                                                    "med12_rxnorm_p" = "c",
+                                                                    "med_otc_1_rxnorm_p" = "c",
+                                                                    "med_otc_2_rxnorm_p" = "c",
+                                                                    "med_otc_3_rxnorm_p" = "c",
+                                                                    "med_otc_4_rxnorm_p" = "c",
+                                                                    "med_otc_5_rxnorm_p" = "c",
+                                                                    "med_otc_6_rxnorm_p" = "c",
+                                                                    "eventname" = "c") )
 
-#' 2. merge the datasets (make sure you merge datasets from the same time points)
-baseline_set = merge(demographics_baseline,family_set_baseline)
 
-#' optional:
-#' 3. create any new required variables
-#' 4. get only the relevant time point
-baseline_set = baseline_set[baseline_set$eventname == "baseline_year_1_arm_1",]
 
-#' 5. export the dataset to csv 
-write.csv(file = "outputs/baseline_set.csv",x = baseline_set, row.names = F, na = "")
+asthma_inflammation_set = merge(asthma_inflammation_physicalhealth, medications)
 
+#create the asthma composit feature
+asthma_inflammation_set$asthma_composite = apply(asthma_inflammation_set[,c("Asthma_medications","medhx_2a","medhx_6l")], 1, function(r) any(r==1)*1)
+
+
+asthma_inflammation_set = merge(demographics_baseline, asthma_inflammation_set)
+asthma_inflammation_set = merge(asthma_inflammation_set, exposome_baseline)
+asthma_inflammation_set = merge(asthma_inflammation_set, geo_data_baseline)
+asthma_inflammation_set = merge(asthma_inflammation_set, ksad_y_diagnosis_anhedonia)
+asthma_inflammation_set = merge(asthma_inflammation_set, physicalhealth_sum_baseline)
+asthma_inflammation_set = merge(asthma_inflammation_set, exposome_sum_baseline)
+asthma_inflammation_set = merge(asthma_inflammation_set, suicide_firstyear_ontopof_baseline)
+
+
+write.csv(file = "outputs/asthma_inflammation_set.csv",x = asthma_inflammation_set, row.names = F, na = "")
 
 
 
