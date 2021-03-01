@@ -41,9 +41,9 @@ for(i in 2:19){
   
 }
 
-
 #fix the tagging for parents that refused to answer (brought_medications == 2) or NA
 med_dataset[(med_dataset$brought_medications %in% c(2,NA)),colnames(tagged_med)[2:19]] = NA
+
 
 #number of asthma meds
 asthma_meds = unique(tagged_med$med_number[which(tagged_med$Asthma_medications == 1)])

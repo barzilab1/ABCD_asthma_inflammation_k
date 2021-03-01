@@ -11,18 +11,6 @@ exposome_sum_baseline <- read_csv("outputs/exposome_sum_baseline.csv")
 suicide_firstyear_ontopof_baseline <- read_csv("outputs/suicide_firstyear_ontopof_baseline.csv")
 medications <- read_csv("outputs/medications.csv", col_types = cols(.default = "n", 
                                                                     "src_subject_id" = "c",
-                                                                    "med1_rxnorm_p" = "c",
-                                                                    "med3_rxnorm_p" = "c",
-                                                                    "med4_rxnorm_p" = "c",
-                                                                    "med7_rxnorm_p" = "c",
-                                                                    "med9_rxnorm_p" = "c",
-                                                                    "med12_rxnorm_p" = "c",
-                                                                    "med_otc_1_rxnorm_p" = "c",
-                                                                    "med_otc_2_rxnorm_p" = "c",
-                                                                    "med_otc_3_rxnorm_p" = "c",
-                                                                    "med_otc_4_rxnorm_p" = "c",
-                                                                    "med_otc_5_rxnorm_p" = "c",
-                                                                    "med_otc_6_rxnorm_p" = "c",
                                                                     "eventname" = "c") )
 
 
@@ -44,6 +32,14 @@ asthma_inflammation_set = merge(asthma_inflammation_set, suicide_firstyear_ontop
 
 write.csv(file = "outputs/asthma_inflammation_set.csv",x = asthma_inflammation_set, row.names = F, na = "")
 
+
+
+set.seed(131)
+one_family_member = do.call(rbind, 
+                            lapply(split(asthma_inflammation_set,asthma_inflammation_set$rel_family_id),
+                                   function(x){x[sample(nrow(x),1),]}))
+
+write.csv(file = "outputs/one_family_member.csv",x = one_family_member, row.names=F, na = "")
 
 
 
