@@ -9,6 +9,7 @@ asthma_inflammation_physicalhealth <- read_csv("outputs/asthma_inflammation_phys
 physicalhealth_sum_baseline <- read_csv("outputs/physicalhealth_sum_baseline.csv")
 exposome_sum_baseline <- read_csv("outputs/exposome_sum_baseline.csv")
 suicide_firstyear_ontopof_baseline <- read_csv("outputs/suicide_firstyear_ontopof_baseline.csv")
+site <- read_csv("outputs/site.csv")
 medications <- read_csv("outputs/medications.csv", col_types = cols(.default = "n", 
                                                                     "src_subject_id" = "c",
                                                                     "eventname" = "c") )
@@ -17,7 +18,7 @@ medications <- read_csv("outputs/medications.csv", col_types = cols(.default = "
 
 asthma_inflammation_set = merge(asthma_inflammation_physicalhealth, medications)
 
-#create the asthma composit feature
+#create the asthma composite feature
 asthma_inflammation_set$asthma_composite = apply(asthma_inflammation_set[,c("Asthma_medications","medhx_2a","medhx_6l")], 1, function(r) any(r==1)*1)
 
 
@@ -28,6 +29,7 @@ asthma_inflammation_set = merge(asthma_inflammation_set, ksad_y_diagnosis_anhedo
 asthma_inflammation_set = merge(asthma_inflammation_set, physicalhealth_sum_baseline)
 asthma_inflammation_set = merge(asthma_inflammation_set, exposome_sum_baseline)
 asthma_inflammation_set = merge(asthma_inflammation_set, suicide_firstyear_ontopof_baseline)
+asthma_inflammation_set = merge(asthma_inflammation_set, site)
 
 
 write.csv(file = "outputs/asthma_inflammation_set.csv",x = asthma_inflammation_set, row.names = F, na = "")
