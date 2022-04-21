@@ -4,12 +4,12 @@
 
 ### paths to be updated:
 #path to abcd Restricted Access folder
-main_abcd_path = "~/Box/"
+main_abcd_path = "~/Box Sync/2. Barzi Lab - Restricted Access/"
 #version
 abcd_version = "3.0/"
 
 ###constant path:
-abcd_box_path = "3-ABCD Data Files/ABCD data/"
+abcd_box_path = "2-ABCD Data Files/ABCD data/3.0_2.1/"
 prs_box_path = "PTSD_Barzilay/"
 
 demographics_files_path = paste0(main_abcd_path, abcd_box_path, "demographics/original data/", abcd_version)
