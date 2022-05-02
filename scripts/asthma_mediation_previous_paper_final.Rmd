@@ -1,0 +1,135 @@
+---
+title: "Run mediation analyses for previous asthma project"
+author: "Kate Tran"
+date: "4/19/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(dplyr)
+library(readr)
+library(qgraph)
+library(corrplot)
+library(lavaan)
+library(lavaanPlot)
+```
+
+# Read data
+
+```{r}
+asthma_cross_all <- read_csv("../outputs/asthma_inflammation_set.csv")
+
+
+# Add regressed out medhx_2a from demographics
+asthma_cross_all$id <- rownames(asthma_cross_all)
+# function
+add_resid <- function(data, outcome) {
+  model = formula(paste0(outcome, " ~ age + sex_br + race_black + race_white + race_other + ethnicity_hisp + household_income +
+      parents_avg_edu + devhx_3_p"))
+  resid <- residuals(glm(model, data = data, family = binomial))
+  coln = paste0("resid_", outcome)
+  dat <- data.frame(col = resid)
+  colnames(dat)[1] <- coln
+  dat$id <- names(resid)
+  
+  return(dat)
+}
+dat_asthma_diag <- add_resid(asthma_cross_all, "medhx_2a")
+
+asthma_cross_all <- asthma_cross_all %>% 
+  left_join(dat_asthma_diag) 
+```
+
+
+```{r}
+set.seed(2022)
+```
+
+```{r}
+mod_diag_suiall <- '
+Asthma_medications ~ a*resid_medhx_2a
+suicidality_y ~ c*resid_medhx_2a + b*Asthma_medications
+
+indirect effect := a*b
+total effect := c + a*b
+'
+
+med_mod_diag_suiall <- sem(mod_diag_suiall,
+                           data = asthma_cross_all,
+                           se = "bootstrap",
+                           bootstrap = 500,
+                          ordered = c("Asthma_medications", "suicidality_y"), # log odds
+                          estimator = "DWLS")
+
+standardizedSolution(med_mod_diag_suiall, type = "std.all")
+
+labels_diag_suiall = list(
+  resid_medhx_2a = "Parent report of asthma \n (independent variable)",
+  suicidality_y = "Suicidality \n (outcome)",
+  Asthma_medications = "Asthma medications \n (mediator)"
+)
+
+plot_diag_suiall <- lavaanPlot(
+  model = med_mod_diag_suiall,
+  labels = labels_diag_suiall,
+  node_options = list(
+    shape = "box",
+    fontname = "Arial",
+    color = "black"
+  ),
+  edge_options = list(color = "black"),
+  coefs = TRUE,
+  stand = TRUE,
+  digits = 3,
+  stars = "regress"
+)
+
+save_png(plot_diag_suiall, "../plots/plot_diag_suiall_regressedoutIV.png" )
+
+summary(med_mod_diag_suiall)
+```
+
+```{r}
+
+# IV and DV only
+mod_diag_sui1y_IVDV <- '
+suicidality_y ~ c*resid_medhx_2a
+'
+
+med_mod_diag_sui1y_IVDV <- sem(mod_diag_sui1y_IVDV,
+                          data = asthma_cross_all,
+                          se = "bootstrap",
+                          bootstrap = 500,
+                          ordered = c("suicidality_y"), # log odds
+                          estimator = "DWLS")
+
+standardizedSolution(med_mod_diag_sui1y_IVDV, type = "std.all")
+
+labels_diag_sui1y_IVDV = list(
+  resid_medhx_2a = "Parent report of asthma \n (independent variable)",
+  suicidality_y = "Suicidality \n (outcome)"
+)
+
+plot_diag_sui1y_IVDV <- lavaanPlot(
+  model = med_mod_diag_sui1y_IVDV,
+  labels = labels_diag_sui1y_IVDV,
+  node_options = list(
+    shape = "box",
+    fontname = "Arial",
+    color = "black"
+  ),
+  edge_options = list(color = "black"),
+  coefs = TRUE,
+  stand = TRUE,
+  # covs = TRUE,
+  digits = 3,
+  stars = "regress"
+)
+
+save_png(plot_diag_sui1y_IVDV, "../plots/plot_diag_suiall_IVDV_regressedoutIV.png" )
+```
+
