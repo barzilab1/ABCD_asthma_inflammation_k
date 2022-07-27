@@ -2,7 +2,8 @@ library(readr)
 
 load_instrument <- function(file_name, file_path) {
   
-  instrument = read.csv(file = paste0(file_path,file_name,".txt"), sep = '\t',header = TRUE, 	row.names=NULL, na.string = c("","NA"), check.names=FALSE, colClasses=c('factor'))
+  instrument = read.csv(file = paste0(file_path,file_name,".txt"), sep = '\t',header = TRUE,
+                        row.names=NULL, na.string = c("","NA"), check.names=FALSE)
   
   #remove details line
   instrument=instrument[-1,]
@@ -17,7 +18,31 @@ load_instrument <- function(file_name, file_path) {
     print("eventname replaced visit")
   }
   
-  #maybe remove empty columns (and print their names)
+  #remove empty columns (and print their names)
+  instrument = instrument[,colSums(is.na(instrument)) != nrow(instrument)]
   
-  return(droplevels(instrument))
+  instrument = droplevels(instrument)
+  
+  
+  #convert to numeric
+  for (i in 1:ncol(instrument)) {
+    
+    tryCatch({
+      if(typeof(instrument[,i]) == "character"){
+        instrument[,i] = as.numeric(instrument[,i])
+      }else if (typeof(instrument[,i]) == "factor"){
+        instrument[,i] = as.numeric(as.character(instrument[,i]))
+      }
+    }, error = function(e) {
+      print(colnames(instrument)[i])
+      print(e)
+    }, warning = function(e){
+      print(colnames(instrument)[i])
+      print(e)
+    })
+    
+  }
+  
+  
+  return(instrument)
 }

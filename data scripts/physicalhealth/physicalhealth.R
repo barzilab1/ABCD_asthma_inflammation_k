@@ -1,20 +1,17 @@
 library(dplyr)
-library(plyr)
 source("config.R")
 source("utility_fun.R")
 
-########### ABCD Parent Medical History Questionnaire (MHX) ########### 
-
+########### Parent Medical History Questionnaire (MHX) ########### 
 mx01 = load_instrument("abcd_mx01", abcd_files_path)
 
 #select variables
 mx01 = mx01[,grepl("src|interview|event|sex|(2(a|b|d|g|m)|6(a|l))$", colnames(mx01))]
 
 # mx01$asthma_composite = apply(mx01[, c("medhx_2a","medhx_6l")], 1, function(r) any(r==1)*1)
-mx01 = mx01 %>% rename_with(., ~ paste(.x, "_l", sep = ""), .cols = contains("medhx"))
+mx01 = mx01 %>% rename_with(., ~ paste0(.x, "_l"), .cols = contains("medhx"))
 
 ########### Longitudinal Parent Medical History Questionnaire ########### 
-
 lpmh01 = load_instrument("abcd_lpmh01", abcd_files_path)
 
 #select variables
@@ -26,7 +23,7 @@ lpmh01 = lpmh01[, grepl("src|interview|event|sex|(2(a|b|d|g|m)|6(a|l)_l)", colna
 summary(lpmh01)
 # lpmh01[, c("eventname", "interview_date", "interview_age")] = NULL
 
-asthma_inflammation_ph = rbind.fill(lpmh01, mx01)
+asthma_inflammation_ph = bind_rows(lpmh01, mx01)
 
 # Combine data at baseline and longitudinal, using the longitudinal colnames for future analyses
 # asthma_inflammation_ph <- asthma_inflammation_ph %>% 

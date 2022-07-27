@@ -14,9 +14,9 @@ demographics_set[demographics_set == 777 | demographics_set == 999] = NA
 
 
 ########### rearrange data ########### 
-### convert variables names to be more readable  
 demographics_set = data.table(demographics_set)
 
+### convert variables names to be more readable  
 ########### sex
 #convert the NIH sex at birth (equal to demo_sex_v2)
 demographics_set[, sex_br := (sex == "F")*1]
@@ -26,8 +26,7 @@ demographics_set[, sex_br := (sex == "F")*1]
 demographics_set[, age := interview_age]
 
 ########### gender
-demographics_set[,gender := demo_gender_id_v2_l]
-demographics_set[, gender:= gender-1]
+demographics_set[, gender:= demo_gender_id_v2_l-1]
 demographics_set[, demo_gender_id_v2_l:= NULL]
 
 ########### parents education
