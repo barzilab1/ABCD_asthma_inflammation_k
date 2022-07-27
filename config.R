@@ -2,21 +2,20 @@
 
 ############# file paths ############# 
 
-### paths to be updated:
 #path to abcd Restricted Access folder
-main_abcd_path = "~/Box/"
-#version
-abcd_version = "3.0/"
-
-###constant path:
-abcd_box_path = "3-ABCD Data Files/ABCD data/"
+main_abcd_path = "~/Box Sync/"
+abcd_box_path = "2. Barzi Lab - Restricted Access/2-ABCD Data Files/"
+abcd_data_path = "ABCD data/"
 prs_box_path = "PTSD_Barzilay/"
+abcd_version = "4.0/"
+abcd_covid = "covid19/"
+p_factor_box_path = "Projects/exposome/3.0/data/p factor scores/"
 
-demographics_files_path = paste0(main_abcd_path, abcd_box_path, "demographics/original data/", abcd_version)
-exposome_files_path = paste0(main_abcd_path, abcd_box_path, "exposome/original data/", abcd_version)
-medication_files_path = paste0(main_abcd_path, abcd_box_path, "medication/original data/", abcd_version)
-suicide_files_path = paste0(main_abcd_path, abcd_box_path, "suicide/original data/", abcd_version)
-psychopathology_files_path = paste0(main_abcd_path, abcd_box_path, "psychopathology/original data/", abcd_version)
-physicalhealth_files_path = paste0(main_abcd_path, abcd_box_path, "physicalhealth/original data/", abcd_version)
-covid19_files_path = paste0(main_abcd_path, abcd_box_path, "covid19/original data/", "may_august_2020/")
+abcd_files_path = paste0(main_abcd_path, abcd_box_path, abcd_data_path, abcd_version)
+abcd_covid_r1_files_path = paste0(main_abcd_path, abcd_box_path, abcd_data_path, abcd_covid, "1_Data_Release/")
+abcd_covid_r2_files_path = paste0(main_abcd_path, abcd_box_path, abcd_data_path, abcd_covid, "2_Data_Release/")
+abcd_covid_r3_files_path = paste0(main_abcd_path, abcd_box_path, abcd_data_path, abcd_covid, "3_Data_Release/")
+additional_files_path = paste0(main_abcd_path, abcd_box_path, "Additional files/")
 prs_files_path = paste0(main_abcd_path, prs_box_path)
+p_factor_files_path = paste0(main_abcd_path, abcd_box_path, p_factor_box_path)
+genetic_files_path = paste0(main_abcd_path, abcd_box_path, abcd_data_path, "genetics/")
