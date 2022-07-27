@@ -1,0 +1,133 @@
+---
+title: "Untitled"
+author: "Kate Tran"
+date: "4/13/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(dplyr)
+library(readr)
+library(tidyr)
+library(data.table)
+library(plyr) 
+library(psych)
+library(tidyr)
+
+source("../config.R")
+```
+
+# Read data
+
+```{r}
+# Combine demographics at baseline and longitudinal
+demographics_baseline <- read.csv("../outputs/demographics_baseline.csv") %>%
+  mutate(eventname = "baseline_year_1_arm_1")
+demographics_long <- read.csv("../outputs/demographics_long.csv")
+
+demo_race = demographics_baseline[,grep("src|race|hisp", colnames(demographics_baseline))]
+
+demographics_long = merge(demographics_long, demo_race)
+demographics_long = demographics_long[demographics_long$eventname != "baseline_year_1_arm_1",]
+demo_merge = rbind.fill(demographics_baseline, demographics_long)
+```
+
+```{r}
+# Exposome
+exposome_baseline <- read_csv("../outputs/exposome_baseline.csv") %>% dplyr::select(-contains(c("interview", "sex", "eventname")))
+exposome_sum_baseline <- read_csv("../outputs/exposome_sum_baseline.csv") %>% dplyr::select(-contains("interview"))
+geo_data_baseline <- read_csv("../outputs/geo_data_baseline.csv") %>% 
+  filter(eventname == "baseline_year_1_arm_1") %>% 
+  dplyr::select(-contains(c("interview", "sex", "eventname")))
+
+# Physical health
+asthma_inflammation_ph <- read_csv("../outputs/asthma_inflammation_ph_notcarry.csv") %>% dplyr::select(-contains("interview"))
+physicalhealth_sum <- read_csv("../outputs/physicalhealth_sum.csv") %>% dplyr::select(-contains("interview"))
+
+# Site
+site <- read_csv("../outputs/site.csv")
+
+# Medications 
+medications <- read_csv("../outputs/medications.csv", col_types = cols(.default = "n", "src_subject_id" = "c", "eventname" = "c"))
+
+# Genetics
+genetic <- read_csv(paste0(genetic_files_path, "genetic.csv"))
+
+# Suicide
+suicide_long <- read_csv("../outputs/suicide_long.csv")
+
+# CBCL
+cbcls <- read_csv("../outputs/cbcls.csv")
+```
+
+# Merge data
+```{r}
+asthma_inflammation_set <- asthma_inflammation_ph %>% 
+  full_join(medications) %>% 
+  left_join(demo_merge) %>% 
+  left_join(suicide_long) %>% 
+  left_join(exposome_baseline) %>% 
+  left_join(exposome_sum_baseline) %>%
+  left_join(cbcls) %>% 
+  left_join(geo_data_baseline) %>% 
+  left_join(physicalhealth_sum) %>% 
+  left_join(genetic) %>% 
+  left_join(site)
+
+# Create the asthma composite feature
+asthma_inflammation_set$asthma_composite = apply(asthma_inflammation_set[,c("Asthma_medications_2w","asthma_diagnosis_l","asthma_attack_l")], 1, function(r) any(r==1)*1)
+
+# Recent active asthma
+asthma_inflammation_set$recent_active_asthma = apply(asthma_inflammation_set[,c("asthma_diagnosis_l","asthma_attack_l")], 1, function(r) any(r==1)*1)
+
+asthma_inflammation_set <- asthma_inflammation_set %>% 
+  mutate(timepoint = case_when(eventname == "baseline_year_1_arm_1" ~ 1,
+                               eventname == "1_year_follow_up_y_arm_1" ~ 2,
+                               eventname == "2_year_follow_up_y_arm_1" ~ 3,
+                               TRUE ~ NA_real_)) %>% 
+  filter(eventname != "3_year_follow_up_y_arm_1")
+
+# Remove empty columns
+asthma_inflammation_set <- asthma_inflammation_set %>% 
+  dplyr::select_if(., function(x) any(!is.na(x)))
+
+write.csv(file = "../outputs/asthma_inflammation_set.csv", x = asthma_inflammation_set, row.names = F, na = "")
+```
+
+# Wide data
+```{r}
+asthma_inflammation_wide <- asthma_inflammation_set %>%
+  dplyr::select(age, contains(c("src", "event", "asthma_diagnosis", "asthma_attack_l", "asthma_composite_l", "recent_active_asthma", 
+                           "Montelukast", "Immune_modulators", "steroids", "SA_y", "SI_y")), 
+                -contains(c("IN.", "Daily"))) %>% 
+  left_join(demographics_baseline %>% dplyr::select(-eventname, -age)) %>% 
+  left_join(genetic %>% dplyr::select(src_subject_id, asthma_PRS)) %>% 
+  mutate(eventname = recode(eventname,
+                            baseline_year_1_arm_1 = "baseline",
+                            `1_year_follow_up_y_arm_1` = "1y",
+                            `2_year_follow_up_y_arm_1` = "2y")) %>%
+  pivot_wider(., names_from = eventname, 
+              values_from = c(age, asthma_diagnosis_l:SI_y),
+                              names_sep = "__")
+
+dim(asthma_inflammation_wide)
+
+write.csv(file = "../outputs/asthma_inflammation_wide.csv", x = asthma_inflammation_wide, row.names = F, na = "")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
