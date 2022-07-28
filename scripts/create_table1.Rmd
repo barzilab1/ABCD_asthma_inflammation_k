@@ -17,70 +17,20 @@ library(tableone)
 ```
 
 ```{r}
-data_wide <- read_csv("../outputs/asthma_inflammation_wide.csv")
+data_wide <- read_csv("../outputs/data_wide_mm.csv")
 data_long <- read_csv("../outputs/asthma_inflammation_set.csv")
 ```
 
 ```{r}
 write.csv(print(
   CreateTableOne(
-    data = data_long,
+    data = data_long %>% mutate(eventname = factor(eventname, c("baseline_year_1_arm_1", "1_year_follow_up_y_arm_1", "2_year_follow_up_y_arm_1"))),
     vars = c("asthma_diagnosis_l", "asthma_attack_l", "asthma_composite", "recent_active_asthma"),
     strata = "eventname",
     factorVars = c("asthma_diagnosis_l", "asthma_attack_l", "asthma_composite", "recent_active_asthma")
   )
 ),
-"../outputs/table1_asthma_072722.csv")
-```
-
-```{r}
-# Create ever variables
-data_wide$asthma_diagnosis_l_ever <- apply(data_wide[,grepl("asthma_diagnosis_l", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
-data_wide$asthma_diagnosis_l_ever <- ifelse( (is.na(data_wide$asthma_diagnosis_l_ever) & 
-                                                     (apply(data_wide[,which(grepl("asthma_diagnosis_l", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
-                                                  0, data_wide$asthma_diagnosis_l_ever)
-
-data_wide$asthma_attack_l_ever <- apply(data_wide[,grepl("asthma_attack_l", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
-data_wide$asthma_attack_l_ever <- ifelse( (is.na(data_wide$asthma_attack_l_ever) & 
-                                                     (apply(data_wide[,which(grepl("asthma_attack_l", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
-                                                  0, data_wide$asthma_attack_l_ever)
-
-data_wide$asthma_composite_ever <- apply(data_wide[,grepl("asthma_composite", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
-data_wide$asthma_composite_ever <- ifelse( (is.na(data_wide$asthma_composite_ever) & 
-                                                     (apply(data_wide[,which(grepl("asthma_composite", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
-                                                  0, data_wide$asthma_composite_ever)
-
-data_wide$recent_active_asthma_ever <- apply(data_wide[,grepl("recent_active_asthma", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
-data_wide$recent_active_asthma_ever <- ifelse( (is.na(data_wide$recent_active_asthma_ever) & 
-                                                     (apply(data_wide[,which(grepl("recent_active_asthma", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
-                                                  0, data_wide$recent_active_asthma_ever)
-
-data_wide$Montelukast_2w_ever <- apply(data_wide[,grepl("Montelukast_2w__", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
-data_wide$Montelukast_2w_ever <- ifelse( (is.na(data_wide$Montelukast_2w_ever) & 
-                                                     (apply(data_wide[,which(grepl("Montelukast_2w__", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
-                                                  0, data_wide$Montelukast_2w_ever)
-
-data_wide$Immune_modulators_2w_ever <- apply(data_wide[,grepl("Immune_modulators_2w__", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
-data_wide$Immune_modulators_2w_ever <- ifelse( (is.na(data_wide$Immune_modulators_2w_ever) & 
-                                                     (apply(data_wide[,which(grepl("Immune_modulators_2w__", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
-                                                  0, data_wide$Immune_modulators_2w_ever)
-
-data_wide$Systemic_steroids_class_H02_2w_ever <- apply(data_wide[,grepl("Systemic_steroids_class_H02_2w__", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
-data_wide$Systemic_steroids_class_H02_2w_ever <- ifelse( (is.na(data_wide$Systemic_steroids_class_H02_2w_ever) & 
-                                                     (apply(data_wide[,which(grepl("Systemic_steroids_class_H02_2w__", colnames(data_wide)))], 1, 
-                                                            function(x) {any(x == 0)}))), 
-                                                  0, data_wide$Systemic_steroids_class_H02_2w_ever)
-
-data_wide$Topical_steroids_2w_ever <- apply(data_wide[,grepl("Topical_steroids_2w__", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
-data_wide$Topical_steroids_2w_ever <- ifelse( (is.na(data_wide$Topical_steroids_2w_ever) & 
-                                                     (apply(data_wide[,which(grepl("Topical_steroids_2w__", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
-                                                  0, data_wide$Topical_steroids_2w_ever)
-
-data_wide$SA_y_ever <- apply(data_wide[,grepl("SA_y", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
-
-data_wide$SI_y_ever <- apply(data_wide[,grepl("SI_y", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
-
-data_wide$age_2y_years <- data_wide$age__2y/12
+"../outputs/table1_asthma_072822.csv")
 ```
 
 ```{r}
@@ -92,7 +42,14 @@ table1_vars <- data_wide %>%
     race_white,
     race_asian,
     ethnicity_hisp,
-    # asthma_diagnosis_l_ever,
+    household_income,
+    parents_avg_edu,
+    devhx_3_p,
+    reshist_addr1_adi_perc,
+    reshist_addr1_popdensity,
+    reshist_addr1_no2,
+    reshist_addr1_pm25,
+    reshist_addr1_proxrd,
     asthma_attack_l_ever,
     asthma_composite_ever,
     SA_y_ever,
@@ -101,9 +58,19 @@ table1_vars <- data_wide %>%
     Immune_modulators_2w_ever,
     Systemic_steroids_class_H02_2w_ever,
     Topical_steroids_2w_ever,
-    asthma_PRS) %>% names()
+    asthma_PRS,
+    CBCL_mean) %>% names()
 
-table1_vars_factors <- table1_vars[!table1_vars %in% c("age_2y_years", "asthma_PRS")]
+table1_vars_factors <- table1_vars[!table1_vars %in% c("age_2y_years", "asthma_PRS",
+                                                       "reshist_addr1_adi_perc",
+                                                       "reshist_addr1_popdensity",
+                                                       "reshist_addr1_no2",
+                                                       "reshist_addr1_pm25",
+                                                       "reshist_addr1_proxrd",
+                                                       "household_income",
+                                                       "parents_avg_edu",
+                                                       "devhx_3_p",
+                                                       "CBCL_mean")]
 
 write.csv(print(
   CreateTableOne(
@@ -114,7 +81,7 @@ write.csv(print(
     addOverall = TRUE
   ), missing = TRUE
 ),
-"../outputs/table1_main_values_072722.csv")
+"../outputs/table1_main_values_072822.csv")
 
 # Get 5-digit p-values to calculate adjusted p-values
 # write.csv(print(
@@ -127,15 +94,15 @@ write.csv(print(
 #     includeNA = F
 #   )
 # ),
-# "../outputs/table1_main_072722.csv")
+# "../outputs/table1_main_072822.csv")
 
-# Next part in Excel: save table1_main_072722.xlsx, move p-values to the 2nd sheet of table1_main_072722.xlsx, clean
+# Next part in Excel: save table1_main_072822.xlsx, move p-values to the 2nd sheet of table1_main_072822.xlsx, clean
 
 # Get FDR adjusted p-values  
-# p_values <- readxl::read_excel("../outputs/table1_main_072722.xlsx", sheet = 2) %>% 
+# p_values <- readxl::read_excel("../outputs/table1_main_072822.xlsx", sheet = 2) %>%
 #   mutate(adj_p = round(p.adjust(p, method = "fdr", ), 3))
 # 
-# writexl::write_xlsx(p_values, "../outputs/table1_main_adjp_072722.xlsx")
+# writexl::write_xlsx(p_values, "../outputs/table1_main_adjp_072822.xlsx")
 
 
 # # Total population
@@ -145,10 +112,10 @@ write.csv(print(
 #     vars = table1_vars,
 #     factorVars = table1_vars_factors
 #     )),
-# "../outputs/table1_main_total_072722.csv")
+# "../outputs/table1_main_total_072822.csv")
 
 # Missing values
-write.csv(print(questionr::freq.na(data = data_wide, table1_vars)), "../outputs/table1_main_missing_072722.csv")
+# write.csv(print(questionr::freq.na(data = data_wide, table1_vars)), "../outputs/table1_main_missing_072822.csv")
 
 
 # What is Non-steroids (bronchodilators, leukotriene modifiers)

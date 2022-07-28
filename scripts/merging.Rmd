@@ -101,22 +101,24 @@ write.csv(file = "../outputs/asthma_inflammation_set.csv", x = asthma_inflammati
 # Wide data
 ```{r}
 asthma_inflammation_wide <- asthma_inflammation_set %>%
-  dplyr::select(age, contains(c("src", "eventname", "sex","race","hisp","asthma_diagnosis", "asthma_attack_l", "asthma_composite", "recent_active_asthma", 
-                           "Montelukast", "Immune_modulators", "steroids", "SA_y", "SI_y"))
-              # ,  -contains(c("IN.", "Daily"))
-                ) %>% 
-  # left_join(demographics_baseline %>% dplyr::select(-eventname, -age)) %>% 
-  left_join(genetic %>% dplyr::select(src_subject_id, asthma_PRS)) %>% 
+  dplyr::select(age, contains(c("src", "eventname", "sex", "race", "hisp", "devhx_3_p", "rel_family_id", "reshist",
+                                "asthma_diagnosis", "asthma_attack_l", "asthma_composite", "recent_active_asthma", 
+                                "Montelukast", "Immune_modulators", "steroids", "SA_y", "SI_y", "cbcl"))) %>% 
+  # Use the most recent data: household_income at 2-year and parents_avg_edu at 1-year follow-up
+  left_join(demographics_long %>% filter(eventname == "1_year_follow_up_y_arm_1") %>% dplyr::select(src_subject_id, parents_avg_edu)) %>% 
+  left_join(demographics_long %>% filter(eventname == "2_year_follow_up_y_arm_1") %>% dplyr::select(src_subject_id, household_income)) %>% 
+  left_join(site %>% filter(eventname == "baseline_year_1_arm_1") %>% dplyr::select(-eventname)) %>% 
+  left_join(genetic %>% dplyr::select(src_subject_id, asthma_PRS, genetic_afr)) %>% 
+  
   mutate(eventname = recode(eventname,
                             baseline_year_1_arm_1 = "baseline",
                             `1_year_follow_up_y_arm_1` = "1y",
                             `2_year_follow_up_y_arm_1` = "2y")) %>%
   pivot_wider(., names_from = eventname, 
-              values_from = c(age, asthma_diagnosis_l:SI_y),
-                              names_sep = "__")
+              values_from = c(age, asthma_diagnosis_l:cbcl_scr_syn_totprob_r),
+                              names_sep = "__") %>%
+  janitor::remove_empty(., which = c("rows", "cols"), quiet = TRUE)
 
-# library(purrr)
-# map(asthma_inflammation_wide[, -1], table)
 write.csv(file = "../outputs/asthma_inflammation_wide.csv", x = asthma_inflammation_wide, row.names = F, na = "")
 ```
 
