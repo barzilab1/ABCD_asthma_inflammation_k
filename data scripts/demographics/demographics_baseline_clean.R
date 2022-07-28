@@ -149,12 +149,12 @@ demographics_set[demo_roster_v2 %in% c(60,77), demo_roster_v2:= NA]
 
 
 
-selected_features = c("src_subject_id", "sex", "age", "gender", 
+selected_features = c("src_subject_id", "sex", "age", "gender", "eventname",
                       "race_white", "race_black", "race_aian", "race_nhpi", "race_asian", "race_other","race_mixed" ,"ethnicity_hisp",
                       "non_hispanic_black", "non_hispanic_white", "parents_avg_edu", "household_income",
                       "born_in_usa", "sex_br")
 
-write.csv(file = "outputs/demographics_baseline.csv", x = demographics_set[,.SD,.SDcols = selected_features], row.names=F, na = "")
+write.csv(file = "outputs/demographics_baseline.csv", x = demographics_set[, ..selected_features], row.names=F, na = "")
 
 
 

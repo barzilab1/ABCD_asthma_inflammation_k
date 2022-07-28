@@ -14,7 +14,6 @@ library(dplyr)
 library(readr)
 library(tidyr)
 library(data.table)
-library(plyr) 
 library(psych)
 library(tidyr)
 
@@ -25,15 +24,14 @@ source("../config.R")
 
 ```{r}
 # Combine demographics at baseline and longitudinal
-demographics_baseline <- read.csv("../outputs/demographics_baseline.csv") %>%
-  mutate(eventname = "baseline_year_1_arm_1")
+demographics_baseline <- read.csv("../outputs/demographics_baseline.csv")
 demographics_long <- read.csv("../outputs/demographics_long.csv")
 
 demo_race = demographics_baseline[,grep("src|race|hisp", colnames(demographics_baseline))]
 
 demographics_long = merge(demographics_long, demo_race)
 demographics_long = demographics_long[demographics_long$eventname != "baseline_year_1_arm_1",]
-demo_merge = rbind.fill(demographics_baseline, demographics_long)
+demo_merge = bind_rows(demographics_baseline, demographics_long)
 demo_merge <- demo_merge %>% dplyr::select(-sex)
 ```
 
@@ -46,8 +44,8 @@ geo_data_baseline <- read_csv("../outputs/geo_data_baseline.csv") %>%
   dplyr::select(-contains(c("interview", "sex", "eventname")))
 
 # Physical health
-asthma_inflammation_ph <- read_csv("../outputs/asthma_inflammation_ph_notcarry.csv") %>% dplyr::select(-contains("interview"))
-physicalhealth_sum <- read_csv("../outputs/physicalhealth_sum.csv") %>% dplyr::select(-contains("interview"), -sex)
+asthma_inflammation_ph <- read_csv("../outputs/asthma_inflammation_ph_notcarry.csv") %>% dplyr::select(-contains(c("interview", "sex")))
+physicalhealth_sum <- read_csv("../outputs/physicalhealth_sum.csv") %>% dplyr::select(-contains(c("interview" ,"sex")))
 
 # Site
 site <- read_csv("../outputs/site.csv") %>% dplyr::select(src_subject_id, eventname, site_id_l_br)
@@ -60,7 +58,7 @@ medications <- read_csv("../outputs/medications.csv", col_types = cols(.default 
 genetic <- read_csv(paste0(genetic_files_path, "genetic.csv"))
 
 # Suicide
-suicide_long <- read_csv("../outputs/suicide_long.csv") %>% dplyr::select(-sex, -interview_age, -interview_date)
+suicide_long <- read_csv("../outputs/suicide_long.csv") %>% dplyr::select(-contains(c("interview" ,"sex")))
 
 # CBCL
 cbcls <- read_csv("../outputs/cbcls.csv")
@@ -103,10 +101,11 @@ write.csv(file = "../outputs/asthma_inflammation_set.csv", x = asthma_inflammati
 # Wide data
 ```{r}
 asthma_inflammation_wide <- asthma_inflammation_set %>%
-  dplyr::select(age, contains(c("src", "event", "asthma_diagnosis", "asthma_attack_l", "asthma_composite", "recent_active_asthma", 
-                           "Montelukast", "Immune_modulators", "steroids", "SA_y", "SI_y")), 
-                -contains(c("IN.", "Daily"))) %>% 
-  left_join(demographics_baseline %>% dplyr::select(-eventname, -age)) %>% 
+  dplyr::select(age, contains(c("src", "eventname", "sex","race","hisp","asthma_diagnosis", "asthma_attack_l", "asthma_composite", "recent_active_asthma", 
+                           "Montelukast", "Immune_modulators", "steroids", "SA_y", "SI_y"))
+              # ,  -contains(c("IN.", "Daily"))
+                ) %>% 
+  # left_join(demographics_baseline %>% dplyr::select(-eventname, -age)) %>% 
   left_join(genetic %>% dplyr::select(src_subject_id, asthma_PRS)) %>% 
   mutate(eventname = recode(eventname,
                             baseline_year_1_arm_1 = "baseline",
