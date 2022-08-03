@@ -14,9 +14,9 @@ demographics_set[demographics_set == 777 | demographics_set == 999] = NA
 
 
 ########### rearrange data ########### 
+### convert variables names to be more readable  
 demographics_set = data.table(demographics_set)
 
-### convert variables names to be more readable  
 ########### sex
 #convert the NIH sex at birth (equal to demo_sex_v2)
 demographics_set[, sex_br := (sex == "F")*1]
@@ -69,8 +69,7 @@ demographics_set[, demo_fam_poverty := {
 
 # demographics_set[ , View(.SD), .SDcols = c(economic_hardship_names, "demo_fam_poverty") ]
 
-# Remove 3y follow-up
-demographics_set = demographics_set[demographics_set$eventname != "3_year_follow_up_y_arm_1"]
+
 
 demographics_set = droplevels(demographics_set)
 
@@ -81,7 +80,7 @@ selected_features = c("src_subject_id", "interview_date", "interview_age", "demo
                       "age", "sex_br", "gender", "demo_ed_v2_l", 
                       economic_hardship_names, "demo_fam_poverty")
 
-write.csv(file = "outputs/demographics_long.csv",x = demographics_set[,..selected_features], row.names=F, na = "")
+write.csv(file = "outputs/demographics_long.csv", x = demographics_set[,..selected_features], row.names=F, na = "")
 
 
 
