@@ -60,8 +60,8 @@ genetic <- read_csv(paste0(genetic_files_path, "genetic.csv"))
 # Suicide
 suicide_long <- read_csv("../outputs/suicide_long.csv") %>% dplyr::select(-contains(c("interview" ,"sex")))
 
-# CBCL
-cbcls <- read_csv("../outputs/cbcls.csv")
+# CBCL and BPM
+psychopathology_sum_scores <- read_csv("../outputs/psychopathology_sum_scores.csv") %>% dplyr::select(-contains(c("interview" ,"sex")))
 ```
 
 # Merge data
@@ -72,7 +72,7 @@ asthma_inflammation_set <- asthma_inflammation_ph %>%
   left_join(suicide_long) %>% 
   left_join(exposome_baseline) %>% 
   left_join(exposome_sum_baseline) %>%
-  left_join(cbcls) %>% 
+  left_join(psychopathology_sum_scores) %>% 
   left_join(geo_data_baseline) %>% 
   left_join(physicalhealth_sum) %>% 
   left_join(genetic) %>% 
@@ -102,22 +102,32 @@ write.csv(file = "../outputs/asthma_inflammation_set.csv", x = asthma_inflammati
 ```{r}
 asthma_inflammation_wide <- asthma_inflammation_set %>%
   dplyr::select(age, contains(c("src", "eventname", "sex", "race", "hisp", "devhx_3_p", "rel_family_id", "reshist",
+                                "asthma_PRS", "genetic_afr", "site_id_l_br", "parents_avg_edu", "household_income",
                                 "asthma_diagnosis", "asthma_attack_l", "asthma_composite", "recent_active_asthma", 
-                                "Montelukast", "Immune_modulators", "steroids", "SA_y", "SI_y", "cbcl"))) %>% 
+                                "Montelukast", "Immune_modulators", "steroids", "SA_y", "SI_y", "cbcl", "bpm",
+                                "medhx_ss_6l_times_p_l", "Asthma_medications_2w_total", "medhx_6a_l", "Asthma_medications_2w"))) %>% 
   # Use the most recent data: household_income at 2-year and parents_avg_edu at 1-year follow-up
-  left_join(demographics_long %>% filter(eventname == "1_year_follow_up_y_arm_1") %>% dplyr::select(src_subject_id, parents_avg_edu)) %>% 
-  left_join(demographics_long %>% filter(eventname == "2_year_follow_up_y_arm_1") %>% dplyr::select(src_subject_id, household_income)) %>% 
-  left_join(site %>% filter(eventname == "baseline_year_1_arm_1") %>% dplyr::select(-eventname)) %>% 
-  left_join(genetic %>% dplyr::select(src_subject_id, asthma_PRS, genetic_afr)) %>% 
-  
+  # left_join(demographics_long %>% filter(eventname == "1_year_follow_up_y_arm_1") %>% dplyr::select(src_subject_id, parents_avg_edu)) %>% 
+  # left_join(demographics_long %>% filter(eventname == "2_year_follow_up_y_arm_1") %>% dplyr::select(src_subject_id, household_income)) %>% 
+  # left_join(site %>% filter(eventname == "baseline_year_1_arm_1") %>% dplyr::select(-eventname)) %>% 
+  # left_join(genetic %>% dplyr::select(src_subject_id, asthma_PRS, genetic_afr)) %>% 
   mutate(eventname = recode(eventname,
                             baseline_year_1_arm_1 = "baseline",
                             `1_year_follow_up_y_arm_1` = "1y",
                             `2_year_follow_up_y_arm_1` = "2y")) %>%
   pivot_wider(., names_from = eventname, 
-              values_from = c(age, asthma_diagnosis_l:cbcl_scr_syn_totprob_r),
+              values_from = c(age, site_id_l_br:Asthma_medications_2w),
                               names_sep = "__") %>%
-  janitor::remove_empty(., which = c("rows", "cols"), quiet = TRUE)
+  janitor::remove_empty(., which = c("rows", "cols"), quiet = TRUE) %>% 
+  # rename variables to use later
+  rename(
+    # use site id at 1-year 
+    site_id_l_br = "site_id_l_br__1y",
+    # use parent education at 1y
+    parents_avg_edu = "parents_avg_edu__1y",
+    # use household income at 2y
+    household_income = "household_income__2y"
+  )
 
 write.csv(file = "../outputs/asthma_inflammation_wide.csv", x = asthma_inflammation_wide, row.names = F, na = "")
 ```
