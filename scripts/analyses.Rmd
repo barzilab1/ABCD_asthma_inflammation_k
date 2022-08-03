@@ -20,14 +20,15 @@ library(sjPlot)
 data_wide <- read_csv("../outputs/data_wide_mm.csv")
 ```
 
-# Check association with CBCL
+# 1. Check association with CBCL
 ```{r}
 diag_cbcl <- lmer(scale(CBCL_mean) ~ asthma_diagnosis_l_ever + scale(age_2y_years) + (1 | site_id_l_br/rel_family_id), data = data_wide)
-tab_model(diag_cbcl, show.intercept = F)
-# Significant association -> covary for CBCL
+diag_bpm <- lmer(scale(BPM_mean) ~ asthma_diagnosis_l_ever + scale(age_2y_years) + (1 | site_id_l_br/rel_family_id), data = data_wide)
+tab_model(diag_cbcl, diag_bpm, show.intercept = F)
+# Significant associations -> covary for CBCL, BPM
 ```
 
-# Model function
+# 2. Model function
 ```{r}
 var_mod_1 <- c(
   "scale(age_2y_years)",
@@ -70,8 +71,8 @@ get_models <- function(outcome, predictor, variables, var_added = NULL) {
 }
 ```
 
-# 4.1. Outcome suicide attempt - asthma
-## 4.1.1. Asthma diagnosis
+# 3.1. Outcome suicide attempt - asthma
+## 3.1.1. Asthma diagnosis
 ```{r}
 SA_diag_0 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", 
                              variables = "(1 | site_id_l_br/rel_family_id)"), 
@@ -89,11 +90,14 @@ SA_diag_3 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnos
 SA_diag_4 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
                    family = binomial, data = data_wide, nAGQ = 0)
 
-comb_SA_diag_1 <- tab_model(SA_diag_0, SA_diag_1, SA_diag_2, SA_diag_3, SA_diag_4, show.intercept = F)
+SA_diag_5 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
+                   family = binomial, data = data_wide, nAGQ = 0)
+
+comb_SA_diag_1 <- tab_model(SA_diag_0, SA_diag_1, SA_diag_2, SA_diag_3, SA_diag_4, SA_diag_5, show.intercept = F)
 comb_SA_diag_1
 ```
 
-## 4.1.2. Asthma attack
+## 3.1.2. Asthma attack
 ```{r}
 SA_attack_0 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", 
                               variables = "(1 | site_id_l_br/rel_family_id)"), 
@@ -111,11 +115,14 @@ SA_attack_3 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attac
 SA_attack_4 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
                    family = binomial, data = data_wide, nAGQ = 0)
 
-comb_SA_attack_1 <- tab_model(SA_attack_0, SA_attack_1, SA_attack_2, SA_attack_3, SA_attack_4, show.intercept = F)
+SA_attack_5 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
+                   family = binomial, data = data_wide, nAGQ = 0)
+
+comb_SA_attack_1 <- tab_model(SA_attack_0, SA_attack_1, SA_attack_2, SA_attack_3, SA_attack_4, SA_attack_5, show.intercept = F)
 comb_SA_attack_1
 ```
 
-## 4.1.3. Asthma composite
+## 3.1.3. Asthma composite
 ```{r}
 SA_comp_0 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_composite_ever", 
                               variables = "(1 | site_id_l_br/rel_family_id)"), 
@@ -133,11 +140,14 @@ SA_comp_3 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_composi
 SA_comp_4 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_composite_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
                    family = binomial, data = data_wide, nAGQ = 0)
 
-comb_SA_comp_1 <- tab_model(SA_comp_0, SA_comp_1, SA_comp_2, SA_comp_3, SA_comp_4, show.intercept = F)
+SA_comp_5 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_composite_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
+                   family = binomial, data = data_wide, nAGQ = 0)
+
+comb_SA_comp_1 <- tab_model(SA_comp_0, SA_comp_1, SA_comp_2, SA_comp_3, SA_comp_4, SA_comp_5, show.intercept = F)
 comb_SA_comp_1
 ```
 
-## 4.1.4. Recently active asthma
+## 3.1.4. Recently active asthma
 ```{r}
 SA_recent_active_0 <- glmer(get_models(outcome = "SA_y_ever", predictor = "recent_active_asthma_ever", 
                               variables = "(1 | site_id_l_br/rel_family_id)"), 
@@ -152,14 +162,146 @@ SA_recent_active_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "recen
 SA_recent_active_3 <- glmer(get_models(outcome = "SA_y_ever", predictor = "recent_active_asthma_ever", variables = var_mod_3), 
                    family = binomial, data = data_wide, nAGQ = 0)
 
-SA_recent_active_4 <- glmer(get_models(outcome = "SA_y_ever", predictor = "recent_active_asthma_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+SA_recent_active_4 <- glmer(get_models(outcome = "SA_y_ever", predictor = "recent_active_asthma_ever", 
+                                       variables = var_mod_3, var_added = "scale(CBCL_mean)"),
                    family = binomial, data = data_wide, nAGQ = 0)
 
-comb_SA_recent_active_1 <- tab_model(SA_recent_active_0, SA_recent_active_1, SA_recent_active_2, SA_recent_active_3, SA_recent_active_4, show.intercept = F)
+SA_recent_active_5 <- glmer(get_models(outcome = "SA_y_ever", predictor = "recent_active_asthma_ever", 
+                                       variables = var_mod_3, var_added = "scale(BPM_mean)"),
+                   family = binomial, data = data_wide, nAGQ = 0)
+
+comb_SA_recent_active_1 <- tab_model(SA_recent_active_0, SA_recent_active_1, SA_recent_active_2, SA_recent_active_3, 
+                                     SA_recent_active_4, SA_recent_active_5, show.intercept = F)
 comb_SA_recent_active_1
 ```
 
-# 4.2. Outcome suicide attempt - genetic scores
+## 3.1.5. Mean of number of asthma attacks/Mean number of mediation and SA #asthma_num_attack_mean #Asthma_medications_2w_total_mean
+```{r}
+# Among people with asthma attack only
+Noattack_mean_SA_1_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_num_attack_mean",
+                                    variables = "(1 | site_id_l_br/rel_family_id)"), 
+                         family = binomial, data = data_wide %>% filter(asthma_attack_l_ever == 1), nAGQ = 0)
+
+Noattack_mean_SA_1_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_num_attack_mean",
+                                    variables = var_mod_1), 
+                         family = binomial, data = data_wide %>% filter(asthma_attack_l_ever == 1), nAGQ = 0)
+
+Nomedication_mean_SA_1_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "Asthma_medications_2w_total_mean",
+                                        variables = "(1 | site_id_l_br/rel_family_id)"), 
+                             family = binomial, data = data_wide %>% filter(asthma_attack_l_ever == 1), nAGQ = 0)
+
+Nomedication_mean_SA_1_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "Asthma_medications_2w_total_mean",
+                                        variables = var_mod_1), 
+                             family = binomial, data = data_wide %>% filter(asthma_attack_l_ever == 1), nAGQ = 0)
+
+tab_model(Noattack_mean_SA_1_1, Noattack_mean_SA_1_2, Nomedication_mean_SA_1_1, Nomedication_mean_SA_1_2, show.intercept = F)
+
+# Among people with asthma diagnosis only
+Noattack_mean_SA_2_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_num_attack_mean",
+                                    variables = "(1 | site_id_l_br/rel_family_id)"), 
+                         family = binomial, data = data_wide %>% filter(asthma_diagnosis_l_ever == 1), nAGQ = 0)
+
+Noattack_mean_SA_2_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_num_attack_mean",
+                                    variables = var_mod_1), 
+                         family = binomial, data = data_wide %>% filter(asthma_diagnosis_l_ever == 1), nAGQ = 0)
+
+Nomedication_mean_SA_2_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "Asthma_medications_2w_total_mean",
+                                        variables = "(1 | site_id_l_br/rel_family_id)"), 
+                             family = binomial, data = data_wide %>% filter(asthma_diagnosis_l_ever == 1), nAGQ = 0)
+
+Nomedication_mean_SA_2_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "Asthma_medications_2w_total_mean",
+                                        variables = var_mod_1), 
+                             family = binomial, data = data_wide %>% filter(asthma_diagnosis_l_ever == 1), nAGQ = 0)
+
+tab_model(Noattack_mean_SA_2_1, Noattack_mean_SA_2_2, Nomedication_mean_SA_2_1, Nomedication_mean_SA_2_2, show.intercept = F)
+
+# remove 0 asthma attack (for mod1)
+Noattack_mean_SA_3_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_num_attack_mean",
+                                    variables = "(1 | site_id_l_br/rel_family_id)"), 
+                         family = binomial, data = data_wide %>% filter(medhx_ss_6l_times_p_l_ever > 0), nAGQ = 0)
+
+Noattack_mean_SA_3_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_num_attack_mean",
+                                    variables = var_mod_1), 
+                         family = binomial, data = data_wide %>% filter(medhx_ss_6l_times_p_l_ever > 0), nAGQ = 0)
+
+tab_model(Noattack_mean_SA_3_1, Noattack_mean_SA_3_2, show.intercept = F)
+
+# remove 0 medications (for mod2)
+Nomedication_mean_SA_3_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "Asthma_medications_2w_total_mean",
+                                        variables = "(1 | site_id_l_br/rel_family_id)"), 
+                             family = binomial, data = data_wide %>% filter(Asthma_medications_2w_total_mean > 0), nAGQ = 0)
+
+Nomedication_mean_SA_3_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "Asthma_medications_2w_total_mean",
+                                        variables = var_mod_1), 
+                             family = binomial, data = data_wide %>% filter(Asthma_medications_2w_total_mean > 0), nAGQ = 0)
+
+tab_model(Nomedication_mean_SA_3_1, Nomedication_mean_SA_3_2, show.intercept = F)
+```
+
+## 3.1.6. Sum of number of asthma attacks/sum number of mediation and SA #asthma_num_attack_sum #Asthma_medications_2w_total_sum
+```{r}
+# Among people with asthma attack only
+Noattack_sum_SA_1_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_num_attack_sum",
+                                    variables = "(1 | site_id_l_br/rel_family_id)"), 
+                         family = binomial, data = data_wide %>% filter(asthma_attack_l_ever == 1), nAGQ = 0)
+
+Noattack_sum_SA_1_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_num_attack_sum",
+                                    variables = var_mod_1), 
+                         family = binomial, data = data_wide %>% filter(asthma_attack_l_ever == 1), nAGQ = 0)
+
+Nomedication_sum_SA_1_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "Asthma_medications_2w_total_sum",
+                                        variables = "(1 | site_id_l_br/rel_family_id)"), 
+                             family = binomial, data = data_wide %>% filter(asthma_attack_l_ever == 1), nAGQ = 0)
+
+Nomedication_sum_SA_1_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "Asthma_medications_2w_total_sum",
+                                        variables = var_mod_1), 
+                             family = binomial, data = data_wide %>% filter(asthma_attack_l_ever == 1), nAGQ = 0)
+
+tab_model(Noattack_sum_SA_1_1, Noattack_sum_SA_1_2, Nomedication_sum_SA_1_1, Nomedication_sum_SA_1_2, show.intercept = F)
+
+# Among people with asthma diagnosis only
+Noattack_sum_SA_2_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_num_attack_sum",
+                                    variables = "(1 | site_id_l_br/rel_family_id)"), 
+                         family = binomial, data = data_wide %>% filter(asthma_diagnosis_l_ever == 1), nAGQ = 0)
+
+Noattack_sum_SA_2_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_num_attack_sum",
+                                    variables = var_mod_1), 
+                         family = binomial, data = data_wide %>% filter(asthma_diagnosis_l_ever == 1), nAGQ = 0)
+
+Nomedication_sum_SA_2_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "Asthma_medications_2w_total_sum",
+                                        variables = "(1 | site_id_l_br/rel_family_id)"), 
+                             family = binomial, data = data_wide %>% filter(asthma_diagnosis_l_ever == 1), nAGQ = 0)
+
+Nomedication_sum_SA_2_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "Asthma_medications_2w_total_sum",
+                                        variables = var_mod_1), 
+                             family = binomial, data = data_wide %>% filter(asthma_diagnosis_l_ever == 1), nAGQ = 0)
+
+tab_model(Noattack_sum_SA_2_1, Noattack_sum_SA_2_2, Nomedication_sum_SA_2_1, Nomedication_sum_SA_2_2, show.intercept = F)
+
+# remove 0 asthma attack (for mod1)
+Noattack_sum_SA_3_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_num_attack_sum",
+                                    variables = "(1 | site_id_l_br/rel_family_id)"), 
+                         family = binomial, data = data_wide %>% filter(medhx_ss_6l_times_p_l_ever > 0), nAGQ = 0)
+
+Noattack_sum_SA_3_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_num_attack_sum",
+                                    variables = var_mod_1), 
+                         family = binomial, data = data_wide %>% filter(medhx_ss_6l_times_p_l_ever > 0), nAGQ = 0)
+
+tab_model(Noattack_sum_SA_3_1, Noattack_sum_SA_3_2, show.intercept = F)
+
+# remove 0 medications (for mod2)
+Nomedication_sum_SA_3_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "Asthma_medications_2w_total_sum",
+                                        variables = "(1 | site_id_l_br/rel_family_id)"), 
+                             family = binomial, data = data_wide %>% filter(Asthma_medications_2w_total_sum > 0), nAGQ = 0)
+
+Nomedication_sum_SA_3_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "Asthma_medications_2w_total_sum",
+                                        variables = var_mod_1), 
+                             family = binomial, data = data_wide %>% filter(Asthma_medications_2w_total_sum > 0), nAGQ = 0)
+
+tab_model(Nomedication_sum_SA_3_1, Nomedication_sum_SA_3_2, show.intercept = F)
+```
+
+# 3.2. Outcome suicide attempt - genetic scores
 ```{r}
 SA_gen_0_black <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_PRS",
                                    variables = "(1 | site_id_l_br/rel_family_id)"), 
@@ -194,12 +336,12 @@ SA_gen_3_white <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_PR
                         family = binomial, data = data_wide %>% filter(genetic_afr == 0), nAGQ = 0)
 
 comb_SA_gen_1 <- tab_model(SA_gen_0_black, SA_gen_0_white, SA_gen_1_black, SA_gen_1_white, SA_gen_2_black, SA_gen_2_white, 
-                           SA_gen_3_black, SA_gen_3_white)
+                           SA_gen_3_black, SA_gen_3_white, show.intercept = F)
 comb_SA_gen_1
 ```
 
-# 5.1. Outcome suicide ideation - asthma
-## 5.1.1. Asthma diagnosis
+# 4.1. Outcome suicide ideation - asthma
+## 4.1.1. Asthma diagnosis
 ```{r}
 SI_diag_0 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", 
                               variables = "(1 | site_id_l_br/rel_family_id)"), 
@@ -221,7 +363,7 @@ comb_SI_diag_1 <- tab_model(SI_diag_0, SI_diag_1, SI_diag_2, SI_diag_3, SI_diag_
 comb_SI_diag_1
 ```
 
-## 5.1.2. Asthma attack
+## 4.1.2. Asthma attack
 ```{r}
 SI_attack_0 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", 
                                 variables = "(1 | site_id_l_br/rel_family_id)"), 
@@ -243,7 +385,7 @@ comb_SI_attack_1 <- tab_model(SI_attack_0, SI_attack_1, SI_attack_2, SI_attack_3
 comb_SI_attack_1
 ```
 
-## 5.1.3. Asthma composite
+## 4.1.3. Asthma composite
 ```{r}
 SI_comp_0 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_composite_ever", 
                               variables = "(1 | site_id_l_br/rel_family_id)"), 
@@ -265,7 +407,7 @@ comb_SI_comp_1 <- tab_model(SI_comp_0, SI_comp_1, SI_comp_2, SI_comp_3, SI_comp_
 comb_SI_comp_1
 ```
 
-## 5.1.4. Recently active asthma
+## 4.1.4. Recently active asthma
 ```{r}
 SI_recent_active_0 <- glmer(get_models(outcome = "SI_y_ever", predictor = "recent_active_asthma_ever", 
                                        variables = "(1 | site_id_l_br/rel_family_id)"), 
@@ -287,7 +429,70 @@ comb_SI_recent_active_1 <- tab_model(SI_recent_active_0, SI_recent_active_1, SI_
 comb_SI_recent_active_1
 ```
 
-# 5.2. Outcome suicide attempt - genetic scores
+## 4.1.5. Mean of number of asthma attacks/Mean number of mediation and SA #asthma_num_attack_mean #Asthma_medications_2w_total_mean
+```{r}
+# Among people with asthma attack only
+Noattack_mean_SI_1_1 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_num_attack_mean",
+                                         variables = "(1 | site_id_l_br/rel_family_id)"), 
+                              family = binomial, data = data_wide %>% filter(asthma_attack_l_ever == 1), nAGQ = 0)
+
+Noattack_mean_SI_1_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_num_attack_mean",
+                                         variables = var_mod_1), 
+                              family = binomial, data = data_wide %>% filter(asthma_attack_l_ever == 1), nAGQ = 0)
+
+Nomedication_mean_SI_1_1 <- glmer(get_models(outcome = "SI_y_ever", predictor = "Asthma_medications_2w_total_mean",
+                                             variables = "(1 | site_id_l_br/rel_family_id)"), 
+                                  family = binomial, data = data_wide %>% filter(asthma_attack_l_ever == 1), nAGQ = 0)
+
+Nomedication_mean_SI_1_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "Asthma_medications_2w_total_mean",
+                                             variables = var_mod_1), 
+                                  family = binomial, data = data_wide %>% filter(asthma_attack_l_ever == 1), nAGQ = 0)
+
+tab_model(Noattack_mean_SI_1_1, Noattack_mean_SI_1_2, Nomedication_mean_SI_1_1, Nomedication_mean_SI_1_2, show.intercept = F)
+
+# Among people with asthma diagnosis only
+Noattack_mean_SI_2_1 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_num_attack_mean",
+                                         variables = "(1 | site_id_l_br/rel_family_id)"), 
+                              family = binomial, data = data_wide %>% filter(asthma_diagnosis_l_ever == 1), nAGQ = 0)
+
+Noattack_mean_SI_2_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_num_attack_mean",
+                                         variables = var_mod_1), 
+                              family = binomial, data = data_wide %>% filter(asthma_diagnosis_l_ever == 1), nAGQ = 0)
+
+Nomedication_mean_SI_2_1 <- glmer(get_models(outcome = "SI_y_ever", predictor = "Asthma_medications_2w_total_mean",
+                                             variables = "(1 | site_id_l_br/rel_family_id)"), 
+                                  family = binomial, data = data_wide %>% filter(asthma_diagnosis_l_ever == 1), nAGQ = 0)
+
+Nomedication_mean_SI_2_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "Asthma_medications_2w_total_mean",
+                                             variables = var_mod_1), 
+                                  family = binomial, data = data_wide %>% filter(asthma_diagnosis_l_ever == 1), nAGQ = 0)
+
+tab_model(Noattack_mean_SI_2_1, Noattack_mean_SI_2_2, Nomedication_mean_SI_2_1, Nomedication_mean_SI_2_2, show.intercept = F)
+
+# remove 0 asthma attack (for mod1)
+Noattack_mean_SI_3_1 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_num_attack_mean",
+                                         variables = "(1 | site_id_l_br/rel_family_id)"), 
+                              family = binomial, data = data_wide %>% filter(medhx_ss_6l_times_p_l_ever > 0), nAGQ = 0)
+
+Noattack_mean_SI_3_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_num_attack_mean",
+                                         variables = var_mod_1), 
+                              family = binomial, data = data_wide %>% filter(medhx_ss_6l_times_p_l_ever > 0), nAGQ = 0)
+
+tab_model(Noattack_mean_SI_3_1, Noattack_mean_SI_3_2, show.intercept = F)
+
+# remove 0 medications (for mod2)
+Nomedication_mean_SI_3_1 <- glmer(get_models(outcome = "SI_y_ever", predictor = "Asthma_medications_2w_total_mean",
+                                             variables = "(1 | site_id_l_br/rel_family_id)"), 
+                                  family = binomial, data = data_wide %>% filter(Asthma_medications_2w_total_mean > 0), nAGQ = 0)
+
+Nomedication_mean_SI_3_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "Asthma_medications_2w_total_mean",
+                                             variables = var_mod_1), 
+                                  family = binomial, data = data_wide %>% filter(Asthma_medications_2w_total_mean > 0), nAGQ = 0)
+
+tab_model(Nomedication_mean_SI_3_1, Nomedication_mean_SI_3_2, show.intercept = F)
+```
+
+# 4.2. Outcome suicide attempt - genetic scores
 ```{r}
 SI_gen_0_black <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_PRS",
                                    variables = "(1 | site_id_l_br/rel_family_id)"), 
@@ -322,13 +527,13 @@ SI_gen_3_white <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_PR
                         family = binomial, data = data_wide %>% filter(genetic_afr == 0), nAGQ = 0)
 
 comb_SI_gen_1 <- tab_model(SI_gen_0_black, SI_gen_0_white, SI_gen_1_black, SI_gen_1_white, SI_gen_2_black, SI_gen_2_white, 
-                           SI_gen_3_black, SI_gen_3_white)
+                           SI_gen_3_black, SI_gen_3_white, show.intercept = F)
 comb_SI_gen_1
 ```
 
 
-# 6. ASTHMA - PRS
-## 6.1. Outcome asthma - genetic scores
+# 5. Asthma - PRS
+## 5.1. Outcome asthma - genetic scores
 
 ```{r}
 diag_PRS_0_black <- glmer(get_models(outcome = "asthma_diagnosis_l_ever", predictor = "asthma_PRS", 
@@ -339,13 +544,13 @@ diag_PRS_0_white <- glmer(get_models(outcome = "asthma_diagnosis_l_ever", predic
                                variables = "(1 | site_id_l_br/rel_family_id)"), 
                       family = binomial, data = data_wide %>% filter(genetic_afr == 0), nAGQ = 0)
 
-diag_PRS_1_black <- glmer(get_models(outcome = "asthma_diagnosis_l_ever", predictor = "asthma_PRS", 
-                                     variables = var_mod_1[var_mod_1 != "race_black" & var_mod_1 != "race_white"]), 
-                      family = binomial, data = data_wide %>% filter(genetic_afr == 1), nAGQ = 0)
-
-diag_PRS_1_white <- glmer(get_models(outcome = "asthma_diagnosis_l_ever", predictor = "asthma_PRS", 
-                                     variables = var_mod_1[var_mod_1 != "race_black" & var_mod_1 != "race_white"]), 
-                      family = binomial, data = data_wide %>% filter(genetic_afr == 0), nAGQ = 0)
+# diag_PRS_1_black <- glmer(get_models(outcome = "asthma_diagnosis_l_ever", predictor = "asthma_PRS", 
+#                                      variables = var_mod_1[var_mod_1 != "race_black" & var_mod_1 != "race_white"]), 
+#                       family = binomial, data = data_wide %>% filter(genetic_afr == 1), nAGQ = 0)
+# 
+# diag_PRS_1_white <- glmer(get_models(outcome = "asthma_diagnosis_l_ever", predictor = "asthma_PRS", 
+#                                      variables = var_mod_1[var_mod_1 != "race_black" & var_mod_1 != "race_white"]), 
+#                       family = binomial, data = data_wide %>% filter(genetic_afr == 0), nAGQ = 0)
 
 attack_PRS_0_black <- glmer(get_models(outcome = "asthma_attack_l_ever", predictor = "asthma_PRS", 
                                variables = "(1 | site_id_l_br/rel_family_id)"), 
@@ -355,13 +560,13 @@ attack_PRS_0_white <- glmer(get_models(outcome = "asthma_attack_l_ever", predict
                                variables = "(1 | site_id_l_br/rel_family_id)"), 
                       family = binomial, data = data_wide %>% filter(genetic_afr == 0), nAGQ = 0)
 
-attack_PRS_1_black <- glmer(get_models(outcome = "asthma_attack_l_ever", predictor = "asthma_PRS", 
-                                     variables = var_mod_1[var_mod_1 != "race_black" & var_mod_1 != "race_white"]), 
-                      family = binomial, data = data_wide %>% filter(genetic_afr == 1), nAGQ = 0)
-
-attack_PRS_1_white <- glmer(get_models(outcome = "asthma_attack_l_ever", predictor = "asthma_PRS", 
-                                     variables = var_mod_1[var_mod_1 != "race_black" & var_mod_1 != "race_white"]), 
-                      family = binomial, data = data_wide %>% filter(genetic_afr == 0), nAGQ = 0)
+# attack_PRS_1_black <- glmer(get_models(outcome = "asthma_attack_l_ever", predictor = "asthma_PRS", 
+#                                      variables = var_mod_1[var_mod_1 != "race_black" & var_mod_1 != "race_white"]), 
+#                       family = binomial, data = data_wide %>% filter(genetic_afr == 1), nAGQ = 0)
+# 
+# attack_PRS_1_white <- glmer(get_models(outcome = "asthma_attack_l_ever", predictor = "asthma_PRS", 
+#                                      variables = var_mod_1[var_mod_1 != "race_black" & var_mod_1 != "race_white"]), 
+#                       family = binomial, data = data_wide %>% filter(genetic_afr == 0), nAGQ = 0)
 
 comp_PRS_0_black <- glmer(get_models(outcome = "asthma_attack_l_ever", predictor = "asthma_PRS", 
                                variables = "(1 | site_id_l_br/rel_family_id)"), 
@@ -371,16 +576,90 @@ comp_PRS_0_white <- glmer(get_models(outcome = "asthma_attack_l_ever", predictor
                                variables = "(1 | site_id_l_br/rel_family_id)"), 
                       family = binomial, data = data_wide %>% filter(genetic_afr == 0), nAGQ = 0)
 
-comp_PRS_1_black <- glmer(get_models(outcome = "asthma_composite_ever", predictor = "asthma_PRS", 
-                                     variables = var_mod_1[var_mod_1 != "race_black" & var_mod_1 != "race_white"]), 
+# comp_PRS_1_black <- glmer(get_models(outcome = "asthma_composite_ever", predictor = "asthma_PRS", 
+#                                      variables = var_mod_1[var_mod_1 != "race_black" & var_mod_1 != "race_white"]), 
+#                       family = binomial, data = data_wide %>% filter(genetic_afr == 1), nAGQ = 0)
+# 
+# comp_PRS_1_white <- glmer(get_models(outcome = "asthma_composite_ever", predictor = "asthma_PRS", 
+#                                      variables = var_mod_1[var_mod_1 != "race_black" & var_mod_1 != "race_white"]), 
+#                       family = binomial, data = data_wide %>% filter(genetic_afr == 0), nAGQ = 0)
+
+recent_active_PRS_0_black <- glmer(get_models(outcome = "recent_active_asthma_ever", predictor = "asthma_PRS", 
+                               variables = "(1 | site_id_l_br/rel_family_id)"), 
                       family = binomial, data = data_wide %>% filter(genetic_afr == 1), nAGQ = 0)
 
-comp_PRS_1_white <- glmer(get_models(outcome = "asthma_composite_ever", predictor = "asthma_PRS", 
-                                     variables = var_mod_1[var_mod_1 != "race_black" & var_mod_1 != "race_white"]), 
+recent_active_PRS_0_white <- glmer(get_models(outcome = "recent_active_asthma_ever", predictor = "asthma_PRS", 
+                               variables = "(1 | site_id_l_br/rel_family_id)"), 
                       family = binomial, data = data_wide %>% filter(genetic_afr == 0), nAGQ = 0)
 
-comb_asthma_1 <- tab_model(diag_PRS_0_black, diag_PRS_0_white, diag_PRS_1_black, diag_PRS_1_white, 
-                           attack_PRS_0_black, attack_PRS_0_white, attack_PRS_1_black, attack_PRS_1_white,
-                           comp_PRS_0_black, comp_PRS_0_white, comp_PRS_1_black, comp_PRS_1_white)
+comb_asthma_1 <- tab_model(diag_PRS_0_black, diag_PRS_0_white, 
+                           attack_PRS_0_black, attack_PRS_0_white, 
+                           comp_PRS_0_black, comp_PRS_0_white, 
+                           recent_active_PRS_0_black, recent_active_PRS_0_white, show.intercept = F)
 comb_asthma_1
 ```
+
+# 6. Outcome broken bones - asthma genetic scores #medhx_6a_l
+```{r}
+bb_1_black <- glmer(get_models(outcome = "medhx_6a_l_ever", predictor = "asthma_PRS",
+                            variables = "(1 | site_id_l_br/rel_family_id)"), 
+                        family = binomial, data = data_wide %>% filter(genetic_afr == 1), nAGQ = 0)
+
+bb_1_white <- glmer(get_models(outcome = "medhx_6a_l_ever", predictor = "asthma_PRS",
+                            variables = "(1 | site_id_l_br/rel_family_id)"), 
+                        family = binomial, data = data_wide %>% filter(genetic_afr == 0), nAGQ = 0)
+
+comb_bb_1 <- tab_model(bb_1_black, bb_1_white, show.intercept = F)
+comb_bb_1
+```
+
+# 7. Asthma - medication
+```{r}
+# diagnosis
+diag_med_0 <- glmer(get_models(outcome = "asthma_diagnosis_l_ever", predictor = "Asthma_medications_2w_total_mean", 
+                             variables = "(1 | site_id_l_br/rel_family_id)"), 
+                      family = binomial, data = data_wide, nAGQ = 0)
+
+diag_med_1 <- glmer(get_models(outcome = "asthma_diagnosis_l_ever", predictor = "Asthma_medications_2w_total_mean", 
+                             variables = var_mod_1), 
+                      family = binomial, data = data_wide, nAGQ = 0)
+
+tab_model(diag_med_0, diag_med_1, show.intercept = F)
+
+
+# attack
+attack_med_0 <- glmer(get_models(outcome = "asthma_attack_l_ever", predictor = "Asthma_medications_2w_total_mean", 
+                             variables = "(1 | site_id_l_br/rel_family_id)"), 
+                      family = binomial, data = data_wide, nAGQ = 0)
+
+attack_med_1 <- glmer(get_models(outcome = "asthma_attack_l_ever", predictor = "Asthma_medications_2w_total_mean", 
+                             variables = var_mod_1), 
+                      family = binomial, data = data_wide, nAGQ = 0)
+
+tab_model(attack_med_0, attack_med_1, show.intercept = F)
+
+
+# composite
+composite_med_0 <- glmer(get_models(outcome = "asthma_composite_ever", predictor = "Asthma_medications_2w_total_mean", 
+                                 variables = "(1 | site_id_l_br/rel_family_id)"), 
+                      family = binomial, data = data_wide, nAGQ = 0)
+
+composite_med_1 <- glmer(get_models(outcome = "asthma_composite_ever", predictor = "Asthma_medications_2w_total_mean", 
+                                 variables = var_mod_1), 
+                      family = binomial, data = data_wide, nAGQ = 0)
+
+tab_model(composite_med_0, composite_med_1, show.intercept = F)
+
+
+# recent active asthma
+recent_active_med_0 <- glmer(get_models(outcome = "recent_active_asthma_ever", predictor = "Asthma_medications_2w_total_mean", 
+                                 variables = "(1 | site_id_l_br/rel_family_id)"), 
+                      family = binomial, data = data_wide, nAGQ = 0)
+
+recent_active_med_1 <- glmer(get_models(outcome = "recent_active_asthma_ever", predictor = "Asthma_medications_2w_total_mean", 
+                                 variables = var_mod_1), 
+                      family = binomial, data = data_wide, nAGQ = 0)
+
+tab_model(recent_active_med_0, recent_active_med_1, show.intercept = F)
+```
+
