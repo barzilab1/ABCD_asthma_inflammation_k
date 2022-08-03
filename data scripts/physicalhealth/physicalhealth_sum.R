@@ -25,12 +25,6 @@ lssmh01 = lssmh01[, grepl("src|interview|event|sex|6(a|l)_times_p_l$", colnames(
 
 asthma_inflammation_ss = bind_rows(medhxss01, lssmh01)
 
-# Rename the asthma exposure to ease use
-asthma_inflammation_ss <- asthma_inflammation_ss %>% 
-  dplyr::rename(broken_bones_freq_l = medhx_ss_6a_times_p_l,
-         asthma_attack_freq_l = medhx_ss_6l_times_p_l)
-
-
 
 physicalhealth_sum = merge(asthma_inflammation_ss, ssphp01)
 
