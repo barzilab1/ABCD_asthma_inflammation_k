@@ -24,12 +24,6 @@ run_meta_analysis <- function(IV, modEUR, modAFR){
   metagen(TE, seTE, studlab = c("EUR", "AFR"),  data = df, sm = "OR")
 }
 
-# run models with age and sex
-# Then add IV and covar
-# Run separate for EUR and AFR
-# run_meta_analysis for age, sex and IV separately
-
-###### Codes: resource intensive - not be able to run on my Mac ###### 
 
 run_models <- function(DV, IV = NULL, covar = NULL) {
   
@@ -108,19 +102,18 @@ run_models <- function(DV, IV = NULL, covar = NULL) {
   
 }
 
-# asthma_diagnosis_l
-covariates <- c("scale(household_income)", "scale(parents_avg_edu)", "scale(devhx_3_p)",
-                "reshist_addr1_adi_perc", "scale(reshist_addr1_popdensity)",
-                "scale(reshist_addr1_no2)", "scale(reshist_addr1_pm25)", "scale(reshist_addr1_proxrd)", "asthma_PRS")
+# covariates <- c("scale(household_income)", "scale(parents_avg_edu)", "scale(devhx_3_p)",
+#                 "reshist_addr1_adi_perc", "scale(reshist_addr1_popdensity)",
+#                 "scale(reshist_addr1_no2)", "scale(reshist_addr1_pm25)", "scale(reshist_addr1_proxrd)", "asthma_PRS")
 
-# mod_SA = run_models("SA_y", IV = "asthma_diagnosis_l", covar = covariates)
-# mod_SI = run_models("SI_y", IV = "asthma_diagnosis_l", covar = covariates)
-# mod_SA = run_models("SA_y", IV = "asthma_attack_l", covar = covariates)
-# mod_SI = run_models("SI_y", IV = "asthma_attack_l", covar = covariates)
-# mod_SA = run_models("SA_y", IV = "asthma_composite_l", covar = covariates)
-# mod_SI = run_models("SI_y", IV = "asthma_composite_l", covar = covariates)
+# mod_SA = run_models("SA_y_ever", IV = "asthma_diagnosis_l_ever", covar = covariates)
+# mod_SI = run_models("SI_y_ever", IV = "asthma_diagnosis_l_ever", covar = covariates)
+# mod_SA = run_models("SA_y_ever", IV = "asthma_attack_l_ever", covar = covariates)
+# mod_SI = run_models("SI_y_ever", IV = "asthma_attack_l_ever", covar = covariates)
+# mod_SA = run_models("SA_y_ever", IV = "asthma_composite_l_ever", covar = covariates)
+# mod_SI = run_models("SI_y_ever", IV = "asthma_composite_l_ever", covar = covariates)
 
-#########
+######### 
 run_models_1IV <- function(DV, IV = NULL, covar = NULL) {
   
   formula_str = paste0(DV, " ~ (1 | site_id_l_br/rel_family_id)")
@@ -143,18 +136,21 @@ run_models_1IV <- function(DV, IV = NULL, covar = NULL) {
   print(run_meta_analysis(IV, modEUR, modAFR))
   return(list(modEUR = modEUR, modAFR = modAFR))
 }
-########
-# mod_SA_PRS_1IV = run_models_1IV("SA_y", IV = "asthma_PRS")
-# mod_SA_PRS = run_models("SA_y", IV = "asthma_PRS")
-# mod_SI_PRS_1IV = run_models_1IV("SI_y", IV = "asthma_PRS")
-# mod_SI_PRS = run_models("SI_y", IV = "asthma_PRS")
+
+
+mod_SA_PRS_1IV = run_models_1IV("SA_y_ever", IV = "asthma_PRS")
+mod_SA_PRS = run_models("SA_y_ever", IV = "asthma_PRS")
+mod_SI_PRS_1IV = run_models_1IV("SI_y_ever", IV = "asthma_PRS")
+mod_SI_PRS = run_models("SI_y_ever", IV = "asthma_PRS")
 mod_diag_PRS_1IV = run_models_1IV("asthma_diagnosis_l_ever", IV = "asthma_PRS")
-mod_diag_PRS = run_models("asthma_diagnosis_l_ever", IV = "asthma_PRS")
-# mod_attack_PRS_1IV = run_models_1IV("asthma_attack_l", IV = "asthma_PRS")
-# mod_attack_PRS = run_models("asthma_attack_l", IV = "asthma_PRS")
-# mod_composite_PRS_1IV = run_models_1IV("asthma_composite_l", IV = "asthma_PRS")
-# mod_composite_PRS = run_models("asthma_composite_l", IV = "asthma_PRS")
-# mod_brokenbones_PRS_1IV = run_models_1IV("medhx_6a_l", IV = "asthma_PRS")
+# mod_diag_PRS = run_models("asthma_diagnosis_l_ever", IV = "asthma_PRS")
+mod_attack_PRS_1IV = run_models_1IV("asthma_attack_l_ever", IV = "asthma_PRS")
+# mod_attack_PRS = run_models("asthma_attack_l_ever", IV = "asthma_PRS")
+mod_composite_PRS_1IV = run_models_1IV("asthma_composite_ever", IV = "asthma_PRS")
+# mod_composite_PRS = run_models("asthma_composite_ever", IV = "asthma_PRS")
+mod_recent_active_PRS_1IV = run_models_1IV("recent_active_asthma_ever", IV = "asthma_PRS")
+# mod_composite_PRS = run_models("asthma_composite_ever", IV = "asthma_PRS")
+mod_brokenbones_PRS_1IV = run_models_1IV("medhx_6a_l_ever", IV = "asthma_PRS")
 
 
 

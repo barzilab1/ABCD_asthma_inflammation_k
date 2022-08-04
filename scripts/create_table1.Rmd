@@ -90,16 +90,17 @@ write.csv(print(
 ),
 "../outputs/table1_main_values_080222.csv")
 
-# Get 5-digit p-values to calculate adjusted p-values
+
 # write.csv(print(
-#   jstable::CreateTableOne2(
+#   CreateTableOne(
 #     data = data_wide,
 #     vars = table1_vars,
 #     strata = "asthma_diagnosis_l_ever",
 #     factorVars = table1_vars_factors,
-#     pDigits = 5,
-#     includeNA = F
-#   )
+#     includeNA = F # To avoid NaN of p-values due to 0s in some cells
+#   ),
+#     missing = T,
+#   pDigits = 5
 # ),
 # "../outputs/table1_main_080222.csv")
 
@@ -110,20 +111,4 @@ p_values <- readxl::read_excel("../outputs/table1_main_values_080222.xlsx", shee
   mutate(adj_p = round(p.adjust(p, method = "fdr", ), 3))
 
 writexl::write_xlsx(p_values, "../outputs/table1_main_adjp_080222.xlsx")
-
-
-# # Total population
-# write.csv(print(
-# CreateTableOne(
-#     data = data_wide,
-#     vars = table1_vars,
-#     factorVars = table1_vars_factors
-#     )),
-# "../outputs/table1_main_total_080222.csv")
-
-# Missing values
-# write.csv(print(questionr::freq.na(data = data_wide, table1_vars)), "../outputs/table1_main_missing_080222.csv")
-
-
-# What is Non-steroids (bronchodilators, leukotriene modifiers)
 ```
