@@ -522,14 +522,6 @@ diag_PRS_0_white <- glmer(get_models(outcome = "asthma_diagnosis_l_ever", predic
                                variables = "(1 | site_id_l_br/rel_family_id)"), 
                       family = binomial, data = data_wide %>% filter(genetic_afr == 0), nAGQ = 0)
 
-# diag_PRS_1_black <- glmer(get_models(outcome = "asthma_diagnosis_l_ever", predictor = "asthma_PRS", 
-#                                      variables = var_mod_1[var_mod_1 != "race_black" & var_mod_1 != "race_white"]), 
-#                       family = binomial, data = data_wide %>% filter(genetic_afr == 1), nAGQ = 0)
-# 
-# diag_PRS_1_white <- glmer(get_models(outcome = "asthma_diagnosis_l_ever", predictor = "asthma_PRS", 
-#                                      variables = var_mod_1[var_mod_1 != "race_black" & var_mod_1 != "race_white"]), 
-#                       family = binomial, data = data_wide %>% filter(genetic_afr == 0), nAGQ = 0)
-
 attack_PRS_0_black <- glmer(get_models(outcome = "asthma_attack_l_ever", predictor = "asthma_PRS", 
                                variables = "(1 | site_id_l_br/rel_family_id)"), 
                       family = binomial, data = data_wide %>% filter(genetic_afr == 1), nAGQ = 0)
@@ -538,14 +530,6 @@ attack_PRS_0_white <- glmer(get_models(outcome = "asthma_attack_l_ever", predict
                                variables = "(1 | site_id_l_br/rel_family_id)"), 
                       family = binomial, data = data_wide %>% filter(genetic_afr == 0), nAGQ = 0)
 
-# attack_PRS_1_black <- glmer(get_models(outcome = "asthma_attack_l_ever", predictor = "asthma_PRS", 
-#                                      variables = var_mod_1[var_mod_1 != "race_black" & var_mod_1 != "race_white"]), 
-#                       family = binomial, data = data_wide %>% filter(genetic_afr == 1), nAGQ = 0)
-# 
-# attack_PRS_1_white <- glmer(get_models(outcome = "asthma_attack_l_ever", predictor = "asthma_PRS", 
-#                                      variables = var_mod_1[var_mod_1 != "race_black" & var_mod_1 != "race_white"]), 
-#                       family = binomial, data = data_wide %>% filter(genetic_afr == 0), nAGQ = 0)
-
 comp_PRS_0_black <- glmer(get_models(outcome = "asthma_composite_ever", predictor = "asthma_PRS", 
                                variables = "(1 | site_id_l_br/rel_family_id)"), 
                       family = binomial, data = data_wide %>% filter(genetic_afr == 1), nAGQ = 0)
@@ -553,14 +537,6 @@ comp_PRS_0_black <- glmer(get_models(outcome = "asthma_composite_ever", predicto
 comp_PRS_0_white <- glmer(get_models(outcome = "asthma_composite_ever", predictor = "asthma_PRS", 
                                variables = "(1 | site_id_l_br/rel_family_id)"), 
                       family = binomial, data = data_wide %>% filter(genetic_afr == 0), nAGQ = 0)
-
-# comp_PRS_1_black <- glmer(get_models(outcome = "asthma_composite_ever", predictor = "asthma_PRS", 
-#                                      variables = var_mod_1[var_mod_1 != "race_black" & var_mod_1 != "race_white"]), 
-#                       family = binomial, data = data_wide %>% filter(genetic_afr == 1), nAGQ = 0)
-# 
-# comp_PRS_1_white <- glmer(get_models(outcome = "asthma_composite_ever", predictor = "asthma_PRS", 
-#                                      variables = var_mod_1[var_mod_1 != "race_black" & var_mod_1 != "race_white"]), 
-#                       family = binomial, data = data_wide %>% filter(genetic_afr == 0), nAGQ = 0)
 
 recent_active_PRS_0_black <- glmer(get_models(outcome = "recent_active_asthma_ever", predictor = "asthma_PRS", 
                                variables = "(1 | site_id_l_br/rel_family_id)"), 
