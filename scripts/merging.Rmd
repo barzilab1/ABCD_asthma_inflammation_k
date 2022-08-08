@@ -106,11 +106,6 @@ asthma_inflammation_wide <- asthma_inflammation_set %>%
                                 "asthma_diagnosis", "asthma_attack_l", "asthma_composite", "recent_active_asthma", 
                                 "Montelukast", "Immune_modulators", "steroids", "SA_y", "SI_y", "cbcl", "bpm",
                                 "medhx_ss_6l_times_p_l", "Asthma_medications_2w_total", "medhx_6a_l", "Asthma_medications_2w"))) %>% 
-  # Use the most recent data: household_income at 2-year and parents_avg_edu at 1-year follow-up
-  # left_join(demographics_long %>% filter(eventname == "1_year_follow_up_y_arm_1") %>% dplyr::select(src_subject_id, parents_avg_edu)) %>% 
-  # left_join(demographics_long %>% filter(eventname == "2_year_follow_up_y_arm_1") %>% dplyr::select(src_subject_id, household_income)) %>% 
-  # left_join(site %>% filter(eventname == "baseline_year_1_arm_1") %>% dplyr::select(-eventname)) %>% 
-  # left_join(genetic %>% dplyr::select(src_subject_id, asthma_PRS, genetic_afr)) %>% 
   mutate(eventname = recode(eventname,
                             baseline_year_1_arm_1 = "baseline",
                             `1_year_follow_up_y_arm_1` = "1y",
