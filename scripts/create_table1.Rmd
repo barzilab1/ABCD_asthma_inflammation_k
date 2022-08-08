@@ -32,7 +32,7 @@ write.csv(print(
   ),
   missing = T
 ),
-"../outputs/table1_asthma_080222.csv")
+"../outputs/table1_asthma_080522.csv")
 ```
 
 ```{r}
@@ -54,6 +54,7 @@ table1_vars <- data_wide %>%
     reshist_addr1_proxrd,
     asthma_attack_l_ever,
     asthma_composite_ever,
+    recent_active_asthma_ever,
     SA_y_ever,
     SI_y_ever,
     Montelukast_2w_ever,
@@ -88,7 +89,7 @@ write.csv(print(
     missing = T,
   pDigits = 5
 ),
-"../outputs/table1_main_values_080222.csv")
+"../outputs/table1_main_values_080522.csv")
 
 
 # write.csv(print(
@@ -102,13 +103,13 @@ write.csv(print(
 #     missing = T,
 #   pDigits = 5
 # ),
-# "../outputs/table1_main_080222.csv")
+# "../outputs/table1_main_080522.csv")
 
-# Next part in Excel: save table1_main_080222.xlsx, move p-values to the 2nd sheet of table1_main_080222.xlsx, clean
+# Next part in Excel: save table1_main_080522.xlsx, move p-values to the 2nd sheet of table1_main_080522.xlsx, clean
 
 # Get FDR adjusted p-values  
-p_values <- readxl::read_excel("../outputs/table1_main_values_080222.xlsx", sheet = 2) %>%
+p_values <- readxl::read_excel("../outputs/table1_main_values_080522.xlsx", sheet = 2) %>%
   mutate(adj_p = round(p.adjust(p, method = "fdr", ), 3))
 
-writexl::write_xlsx(p_values, "../outputs/table1_main_adjp_080222.xlsx")
+writexl::write_xlsx(p_values, "../outputs/table1_main_adjp_080522.xlsx")
 ```
