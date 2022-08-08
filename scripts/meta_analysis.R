@@ -98,17 +98,6 @@ run_models <- function(DV, IV = NULL, demo = T, covar = NULL) {
   
 }
 
-# covariates <- c("scale(household_income)", "scale(parents_avg_edu)", "scale(devhx_3_p)",
-#                 "reshist_addr1_adi_perc", "scale(reshist_addr1_popdensity)",
-#                 "scale(reshist_addr1_no2)", "scale(reshist_addr1_pm25)", "scale(reshist_addr1_proxrd)", "asthma_PRS")
-
-# mod_SA = run_models("SA_y_ever", IV = "asthma_diagnosis_l_ever", covar = covariates, demo = T)
-# mod_SI = run_models("SI_y_ever", IV = "asthma_diagnosis_l_ever", covar = covariates, demo = T)
-# mod_SA = run_models("SA_y_ever", IV = "asthma_attack_l_ever", covar = covariates, demo = T)
-# mod_SI = run_models("SI_y_ever", IV = "asthma_attack_l_ever", covar = covariates, demo = T)
-# mod_SA = run_models("SA_y_ever", IV = "asthma_composite_l_ever", covar = covariates, demo = T)
-# mod_SI = run_models("SI_y_ever", IV = "asthma_composite_l_ever", covar = covariates, demo = T)
-
 
 # mod_SA_PRS_1IV = run_models("SA_y_ever", IV = "asthma_PRS")
 mod_SA_PRS = run_models("SA_y_ever", IV = "asthma_PRS", demo = T)
