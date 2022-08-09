@@ -32,36 +32,33 @@ demo_race = demographics_baseline[,grep("src|race|hisp", colnames(demographics_b
 demographics_long = merge(demographics_long, demo_race)
 demographics_long = demographics_long[demographics_long$eventname != "baseline_year_1_arm_1",]
 demo_merge = bind_rows(demographics_baseline, demographics_long)
-demo_merge <- demo_merge %>% dplyr::select(-sex)
 ```
 
 ```{r}
 # Exposome
 exposome_baseline <- read_csv("../outputs/exposome_baseline.csv") %>% dplyr::select(-contains(c("interview", "sex", "eventname")))
-exposome_sum_baseline <- read_csv("../outputs/exposome_sum_baseline.csv") %>% dplyr::select(-contains("interview"), -sex)
+exposome_sum <- read_csv("../outputs/exposome_sum.csv") 
 geo_data_baseline <- read_csv("../outputs/geo_data_baseline.csv") %>% 
-  filter(eventname == "baseline_year_1_arm_1") %>% 
-  dplyr::select(-contains(c("interview", "sex", "eventname")))
+  filter(eventname == "baseline_year_1_arm_1") %>% dplyr::select(-contains(c("interview", "sex", "eventname")))
 
 # Physical health
-asthma_inflammation_ph <- read_csv("../outputs/asthma_inflammation_ph_notcarry.csv") %>% dplyr::select(-contains(c("interview", "sex")))
-physicalhealth_sum <- read_csv("../outputs/physicalhealth_sum.csv") %>% dplyr::select(-contains(c("interview" ,"sex")))
+asthma_inflammation_ph <- read_csv("../outputs/asthma_inflammation_ph_notcarry.csv")
+physicalhealth_sum <- read_csv("../outputs/physicalhealth_sum.csv") 
 
 # Site
 site <- read_csv("../outputs/site.csv") %>% dplyr::select(src_subject_id, eventname, site_id_l_br)
 
 # Medications 
-medications <- read_csv("../outputs/medications.csv", col_types = cols(.default = "n", "src_subject_id" = "c", "eventname" = "c")) %>% 
-  dplyr::select(-interview_age)
+medications <- read_csv("../outputs/medications.csv", col_types = cols(.default = "n", "src_subject_id" = "c", "eventname" = "c", "sex" = "c")) 
 
 # Genetics
 genetic <- read_csv(paste0(genetic_files_path, "genetic.csv"))
 
 # Suicide
-suicide_long <- read_csv("../outputs/suicide_long.csv") %>% dplyr::select(-contains(c("interview" ,"sex")))
+suicide_long <- read_csv("../outputs/suicide_long.csv") 
 
 # CBCL and BPM
-psychopathology_sum_scores <- read_csv("../outputs/psychopathology_sum_scores.csv") %>% dplyr::select(-contains(c("interview" ,"sex")))
+psychopathology_sum_scores <- read_csv("../outputs/psychopathology_sum_scores.csv") 
 ```
 
 # Merge data
@@ -71,7 +68,7 @@ asthma_inflammation_set <- asthma_inflammation_ph %>%
   left_join(demo_merge) %>% 
   left_join(suicide_long) %>% 
   left_join(exposome_baseline) %>% 
-  left_join(exposome_sum_baseline) %>%
+  left_join(exposome_sum) %>%
   left_join(psychopathology_sum_scores) %>% 
   left_join(geo_data_baseline) %>% 
   left_join(physicalhealth_sum) %>% 
@@ -85,11 +82,12 @@ asthma_inflammation_set$asthma_composite = apply(asthma_inflammation_set[,c("Ast
 asthma_inflammation_set$recent_active_asthma = apply(asthma_inflammation_set[,c("asthma_diagnosis_l","asthma_attack_l")], 1, function(r) any(r==1)*1)
 
 asthma_inflammation_set <- asthma_inflammation_set %>% 
+  filter(eventname != "3_year_follow_up_y_arm_1") %>%
   mutate(timepoint = case_when(eventname == "baseline_year_1_arm_1" ~ 1,
                                eventname == "1_year_follow_up_y_arm_1" ~ 2,
                                eventname == "2_year_follow_up_y_arm_1" ~ 3,
-                               TRUE ~ NA_real_)) %>% 
-  filter(eventname != "3_year_follow_up_y_arm_1")
+                               TRUE ~ NA_real_))
+  
 
 # Remove empty columns
 asthma_inflammation_set <- asthma_inflammation_set %>% 
@@ -113,10 +111,10 @@ asthma_inflammation_wide <- asthma_inflammation_set %>%
   pivot_wider(., names_from = eventname, 
               values_from = c(age, site_id_l_br:Asthma_medications_2w),
                               names_sep = "__") %>%
-  janitor::remove_empty(., which = c("rows", "cols"), quiet = TRUE) %>% 
+  janitor::remove_empty(., which = c("rows", "cols"), quiet = TRUE) %>%
   # rename variables to use later
   rename(
-    # use site id at 1-year 
+    # use site id at 1-year
     site_id_l_br = "site_id_l_br__1y",
     # use parent education at 1y
     parents_avg_edu = "parents_avg_edu__1y",

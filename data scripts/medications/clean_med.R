@@ -13,11 +13,7 @@ for(colname in colnames_to_clean){
   medsy01[[colname]][ind] = NA
 }
 
-#remove empty col
-medsy01 = medsy01[, colSums(is.na(medsy01)) != nrow(medsy01)]
-
-
-med_dataset = medsy01[,grepl("(src|interview_a|gender|event|brou|^med(.)*_rxnorm(_1yr)*_p$|med(.)*_2wk_p)", colnames(medsy01))]
+med_dataset = medsy01[,grepl("(src|interview_a|sex|event|brou|^med(.)*_rxnorm(_1yr)*_p$|med(.)*_2wk_p)", colnames(medsy01))]
 
 setDT(med_dataset)
 # split the med name to get the numbers 
@@ -40,8 +36,8 @@ for (j in 1:15) {
   new_col_name = paste0("med",j,"_rxnorm_2wk_p")
   new_col_name_otc = paste0("med_otc_",j,"_rxnorm_2wk_p")
   
-  med_dataset[get(col_name_2w) ==1, (new_col_name) := .SD, .SDcols= col_name_1y] 
-  med_dataset[get(col_name_2w_otc) ==1, (new_col_name_otc) := .SD, .SDcols= col_name_1y_otc]
+  med_dataset[get(col_name_2w) == 1, (new_col_name) := .SD, .SDcols= col_name_1y] 
+  med_dataset[get(col_name_2w_otc) == 1, (new_col_name_otc) := .SD, .SDcols= col_name_1y_otc]
 }
 
 # med_dataset[,View(.SD), .SDcols = c(grepl("med_otc_10_(rxnorm_)?(2wk|1yr)", colnames(med_dataset)))]
@@ -73,14 +69,14 @@ for(i in 13:ncol(tagged_med)){
   med_dataset[,c(colname_2w, colname_1yr)] = 0
   med_dataset[apply(med_dataset[,last_2wk_colnames], 1, function(r) any(r %in% meds)), colname_2w] = 1
   med_dataset[, colname_2w_sum] = apply(med_dataset[,last_2wk_colnames], 1, function(r) {s = sum(r %in% meds)
-  ifelse(s==0,NA,s)})
+                                                                                          ifelse(s==0,NA,s)})
   med_dataset[apply(med_dataset[,last_1yr_colnames], 1, function(r) any(r %in% meds)), colname_1yr] = 1
   med_dataset[, colname_1yr_sum] = apply(med_dataset[,last_1yr_colnames], 1, function(r) {s = sum(r %in% meds)
-  ifelse(s==0,NA,s)})
+                                                                                           ifelse(s==0,NA,s)})
   
 }
 
 
-write.csv(file = paste0("outputs/medications.csv"),x = med_dataset ,row.names=F, na = "")
+write.csv(file = "outputs/medications.csv", x = med_dataset ,row.names=F, na = "")
 
 

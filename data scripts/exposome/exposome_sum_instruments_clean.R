@@ -24,8 +24,8 @@ summary(droplevels(ssmty))
 
 
 # merge tables
-exposome_sum_baseline = merge(sscey01, ssmty)
-write.csv(file = "outputs/exposome_sum_baseline.csv", x = exposome_sum_baseline, row.names = F, na = "")
+exposome_sum = merge(sscey01, ssmty)
+write.csv(file = "outputs/exposome_sum.csv", x = exposome_sum, row.names = F, na = "")
 
 
 

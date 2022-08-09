@@ -13,7 +13,7 @@ summary(ssphp01[ssphp01$eventname == "baseline_year_1_arm_1", ])
 ########### Summary Scores Medical History - baseline only ########### 
 medhxss01 = load_instrument("abcd_medhxss01", abcd_files_path)
 
-#select variables for immune study
+#select variables
 medhxss01 = medhxss01[,grepl("src|interview|event|sex|6(a|l)_times_p$", colnames(medhxss01))]
 
 #change the names to be alligned with the longitudinal instrument 
