@@ -78,10 +78,10 @@ data_wide$CBCL_mean <- rowMeans(data_wide[,which(grepl("cbcl_scr_syn_totprob_r",
 data_wide$BPM_mean <- rowMeans(data_wide[,which(grepl("bpm_y_scr_totalprob_r", colnames(data_wide)))], na.rm = T)
 
 data_wide$asthma_num_attack_mean <- rowMeans(data_wide[,which(grepl("medhx_ss_6l_times_p_l__", colnames(data_wide)))], na.rm = T)
-# data_wide$asthma_num_attack_sum <- rowSums(data_wide[,which(grepl("medhx_ss_6l_times_p_l", colnames(data_wide)))], na.rm = T)
+data_wide$asthma_num_attack_sum <- rowSums(data_wide[,which(grepl("medhx_ss_6l_times_p_l__", colnames(data_wide)))], na.rm = T)
 
-data_wide$Asthma_medications_2w_total_mean <- rowMeans(data_wide[,which(grepl("Asthma_medications_2w_total", colnames(data_wide)))], na.rm = T)
-# data_wide$Asthma_medications_2w_total_sum <- rowSums(data_wide[,which(grepl("Asthma_medications_2w_total", colnames(data_wide)))], na.rm = T)
+data_wide$Asthma_medications_2w_total_mean <- rowMeans(data_wide[,which(grepl("Asthma_medications_2w_total__", colnames(data_wide)))], na.rm = T)
+data_wide$Asthma_medications_2w_total_sum <- rowSums(data_wide[,which(grepl("Asthma_medications_2w_total__", colnames(data_wide)))], na.rm = T)
 
 data_wide$age_2y_years <- data_wide$age__2y/12
 ```
