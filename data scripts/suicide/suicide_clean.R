@@ -39,10 +39,6 @@ ksad_y$SA_past_y = apply(ksad_y[,which(grepl("ksads_23_(963|964|965)", colnames(
 ksad_p$SA_p = (ksad_p$SA_current_p == 1 | ksad_p$SA_past_p == 1)*1
 ksad_y$SA_y = (ksad_y$SA_current_y == 1 | ksad_y$SA_past_y == 1)*1
 
-## Those with both SA_y == 1 & SI_y == 1 will get SI_y == 0
-# ksad_y$SI_y[ksad_y$SA_y == 1] <- 0
-
-
 
 #combine ideation and attempt
 ksad_p$suicidality_p = (ksad_p$SI_p == 1 | ksad_p$SA_p == 1)*1
@@ -54,12 +50,7 @@ ksad_y$nssi_current_y = apply(ksad_y[,which(grepl("ksads_23_(945|955)", colnames
 
 ksad_p$nssi_past_p = apply(ksad_p[,which(grepl("ksads_23_(956|966)", colnames(ksad_p)))],1 ,function(x) {any(x == 1)*1})
 ksad_y$nssi_past_y = apply(ksad_y[,which(grepl("ksads_23_(956|966)", colnames(ksad_y)))],1 ,function(x) {any(x == 1)*1})
-## Those with nssi_y == 1 but SA_y == 1 will get 0 # Those with both NSSI & SI == 1 will be treated later if needed
-# ksad_y$nssi_y[ksad_y$SA_y == 1] <- 0
 
-
-#control: SA, SI, NSSI = 0
-# ksad_y$sui_control <- apply(ksad_y[,which(grepl("SA_y|SI_y|nssi_y", colnames(ksad_y)))], 1, function(x) {all(x == 0)*1})
 
 # Merge data # long format
 suicide_set = merge(ksad_y, ksad_p)
@@ -67,48 +58,6 @@ suicide_set = merge(ksad_y, ksad_p)
 # Select columns
 suicide_set = suicide_set[, which(grepl("src|inter|event|sex|SI|SA|sui|nssi|ksads_23_9", colnames(suicide_set)))]
 
-
-# THINK ABOUT HOW TO DEAL WITH SUICIDE FROM PARENT REPORTS???
-
-
-# Create wide data for mediation analyses
-
-# #  new variable to use in reshape from long to wide format
-# suicide_set$timepoint = sub("_year.*", "", suicide_set$eventname)
-# suicide_set[,c("sex","interview_date","interview_age","eventname")] = NULL
-# suicide_set_wide = reshape(suicide_set, direction = "wide", idvar = "src_subject_id", timevar = "timepoint", sep = "_")
-# 
-# 
-# 
-# write.csv(file = "outputs/suicide_long.csv", x = suicide_set, row.names = F, na = "")
-# write.csv(file = "outputs/suicide_wide.csv", x = suicide_set_wide, row.names = F, na = "")
-
-# suicide_set_baseline = suicide_set[which(grepl("baseline", suicide_set$eventname)),which(grepl("ksads_23_9|src|inter|event|sex|SI|SA|sui|nssi", colnames(suicide_set)))]
-# 
-# 
-# suicide_set_1_year_follow = suicide_set[which(grepl("1_year_follow_up", suicide_set$eventname)),which(grepl("src|interview_a|sex|SI_|SA_|sui|nssi", colnames(suicide_set)))]
-# 
-# suicide_set_1_year_follow$suicidality_current_1_year_p = (suicide_set_1_year_follow$SI_current_p == 1 | suicide_set_1_year_follow$SA_current_p == 1)*1
-# suicide_set_1_year_follow$suicidality_current_1_year_y = (suicide_set_1_year_follow$SI_current_y == 1 | suicide_set_1_year_follow$SA_current_y == 1)*1
-# suicide_set_1_year_follow$suicidality_past_1_year_y = (suicide_set_1_year_follow$SI_past_y == 1 | suicide_set_1_year_follow$SA_past_y == 1)*1
-# 
-# #remove parent report, they all empty 
-# suicide_set_1_year_follow = suicide_set_1_year_follow[,which(colSums(is.na(suicide_set_1_year_follow)) < 11234)]
-# 
-# #update names
-# colnames(suicide_set_1_year_follow)[2] = "interview_age_1_year"
-# colnames(suicide_set_1_year_follow)[4] = "SI_current_1_year_y"
-# colnames(suicide_set_1_year_follow)[5] = "SI_past_1_year_y"
-# colnames(suicide_set_1_year_follow)[6] = "SI_1_year_y"
-# colnames(suicide_set_1_year_follow)[7] = "SA_current_1_year_y"
-# colnames(suicide_set_1_year_follow)[8] = "SA_past_1_year_y"
-# colnames(suicide_set_1_year_follow)[9] = "SA_1_year_y"
-# colnames(suicide_set_1_year_follow)[10] = "suicidality_1_year_y"
-# colnames(suicide_set_1_year_follow)[11] = "nssi_current_1_year_y"
-# colnames(suicide_set_1_year_follow)[12] = "nssi_past_1_year_y"
-# 
-# 
-# suicide_firstyear_ontopof_baseline = merge(suicide_set_baseline, suicide_set_1_year_follow , all.x = T)
 write.csv(file = "outputs/suicide_long.csv", x = suicide_set, row.names = F, na = "")
 
 

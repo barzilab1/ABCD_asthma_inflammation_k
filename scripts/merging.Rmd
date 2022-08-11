@@ -37,7 +37,6 @@ demo_merge = bind_rows(demographics_baseline, demographics_long)
 ```{r}
 # Exposome
 exposome_baseline <- read_csv("../outputs/exposome_baseline.csv") %>% dplyr::select(-contains(c("interview", "sex", "eventname")))
-exposome_sum <- read_csv("../outputs/exposome_sum.csv") 
 geo_data_baseline <- read_csv("../outputs/geo_data_baseline.csv") %>% 
   filter(eventname == "baseline_year_1_arm_1") %>% dplyr::select(-contains(c("interview", "sex", "eventname")))
 
@@ -68,7 +67,6 @@ asthma_inflammation_set <- asthma_inflammation_ph %>%
   left_join(demo_merge) %>% 
   left_join(suicide_long) %>% 
   left_join(exposome_baseline) %>% 
-  left_join(exposome_sum) %>%
   left_join(psychopathology_sum_scores) %>% 
   left_join(geo_data_baseline) %>% 
   left_join(physicalhealth_sum) %>% 
