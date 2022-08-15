@@ -48,13 +48,6 @@ run_models <- function(DV, IV = NULL, demo = T, covar = NULL) {
   
   modEUR = glmer(formula, data = dataset_[dataset_$genetic_afr == 0,], family = binomial, nAGQ = 0)
   modAFR = glmer(formula, data = dataset_[dataset_$genetic_afr == 1,], family = binomial, nAGQ = 0)
-  
-  # print(tab_model(modEUR,modAFR, show.intercept = F ))
-  # cat("\nr2 EUR: ")
-  # print(round(r.squaredGLMM(modEUR)[1,1], digits = 3) *100)
-  # cat("\nr2 AFR: ")
-  # print(round(r.squaredGLMM(modAFR)[1,1], digits = 3) *100)
-
     
   if(demo){
     cat("\n\n meta analysis for age:\n")
