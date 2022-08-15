@@ -15,13 +15,12 @@ library(readr)
 library(tidyr)
 library(data.table)
 library(psych)
-library(tidyr)
+library(janitor)
 
 source("../config.R")
 ```
 
 # Read data
-
 ```{r}
 # Combine demographics at baseline and longitudinal
 demographics_baseline <- read.csv("../outputs/demographics_baseline.csv")
@@ -60,7 +59,7 @@ suicide_long <- read_csv("../outputs/suicide_long.csv")
 psychopathology_sum_scores <- read_csv("../outputs/psychopathology_sum_scores.csv") 
 ```
 
-# Merge data
+# Merge long data
 ```{r}
 asthma_inflammation_set <- asthma_inflammation_ph %>%
   full_join(medications) %>% 
@@ -89,7 +88,7 @@ asthma_inflammation_set <- asthma_inflammation_set %>%
 
 # Remove empty columns
 asthma_inflammation_set <- asthma_inflammation_set %>% 
-  dplyr::select_if(., function(x) any(!is.na(x)))
+  remove_empty(., which = c("rows", "cols"), quiet = TRUE)
 
 write.csv(file = "../outputs/asthma_inflammation_set.csv", x = asthma_inflammation_set, row.names = F, na = "")
 ```
@@ -109,7 +108,7 @@ asthma_inflammation_wide <- asthma_inflammation_set %>%
   pivot_wider(., names_from = eventname, 
               values_from = c(age, site_id_l_br:Asthma_medications_2w),
                               names_sep = "__") %>%
-  janitor::remove_empty(., which = c("rows", "cols"), quiet = TRUE) %>%
+  remove_empty(., which = c("rows", "cols"), quiet = TRUE) %>%
   # rename variables to use later
   rename(
     # use site id at 1-year

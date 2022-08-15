@@ -153,11 +153,3 @@ selected_features = c("src_subject_id", "sex", "age", "gender", "eventname", "in
                       "born_in_usa", "sex_br")
 
 write.csv(file = "outputs/demographics_baseline.csv", x = demographics_set[,..selected_features], row.names=F, na = "")
-
-
-
-
-
-
-
-

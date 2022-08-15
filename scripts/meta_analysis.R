@@ -96,16 +96,24 @@ tab_model(mod_SI_PRS, show.intercept = F )
 
 mod_diag_PRS_1IV = run_models("asthma_diagnosis_l_ever", IV = "asthma_PRS", demo = F)
 tab_model(mod_diag_PRS_1IV, show.intercept = F )
-# mod_diag_PRS = run_models("asthma_diagnosis_l_ever", IV = "asthma_PRS", demo = T)
+mod_diag_PRS = run_models("asthma_diagnosis_l_ever", IV = "asthma_PRS", demo = T)
+tab_model(mod_diag_PRS, show.intercept = F )
+
 mod_attack_PRS_1IV = run_models("asthma_attack_l_ever", IV = "asthma_PRS", demo = F)
 tab_model(mod_attack_PRS_1IV, show.intercept = F )
-# mod_attack_PRS = run_models("asthma_attack_l_ever", IV = "asthma_PRS", demo = T)
+mod_attack_PRS = run_models("asthma_attack_l_ever", IV = "asthma_PRS", demo = T)
+tab_model(mod_attack_PRS, show.intercept = F )
+
 mod_composite_PRS_1IV = run_models("asthma_composite_ever", IV = "asthma_PRS", demo = F)
 tab_model(mod_composite_PRS_1IV, show.intercept = F )
-# mod_composite_PRS = run_models("asthma_composite_ever", IV = "asthma_PRS", demo = T)
+mod_composite_PRS = run_models("asthma_composite_ever", IV = "asthma_PRS", demo = T)
+tab_model(mod_composite_PRS, show.intercept = F )
+
 mod_recent_active_PRS_1IV = run_models("recent_active_asthma_ever", IV = "asthma_PRS", demo = F)
 tab_model(mod_recent_active_PRS_1IV, show.intercept = F )
-# mod_composite_PRS = run_models("asthma_composite_ever", IV = "asthma_PRS", demo = T)
+mod_recent_active_PRS = run_models("recent_active_asthma_ever", IV = "asthma_PRS", demo = T)
+tab_model(mod_recent_active_PRS, show.intercept = F )
+
 mod_brokenbones_PRS_1IV = run_models("medhx_6a_l_ever", IV = "asthma_PRS", demo = F)
 tab_model(mod_brokenbones_PRS_1IV, show.intercept = F )
 

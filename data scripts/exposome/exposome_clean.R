@@ -22,9 +22,3 @@ dhx01 = dhx01[,grep("src|event|interview|sex|devhx_3_p$", colnames(dhx01))]
 exposome_baseline = merge(acspsw03, dhx01)
 
 write.csv(file = "outputs/exposome_baseline.csv",x = exposome_baseline, row.names = F, na = "")
-
-
-
-
-
-
