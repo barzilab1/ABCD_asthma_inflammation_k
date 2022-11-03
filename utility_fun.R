@@ -46,3 +46,27 @@ load_instrument <- function(file_name, file_path) {
   
   return(instrument)
 }
+
+
+get_models <- function(outcome, predictor, variables, var_added = NULL) {
+  if (is.null(var_added)) {
+    model <- as.formula(paste0(outcome, " ~", paste0(c(
+      predictor, variables
+    ), collapse = " + ")))
+  } else {
+    model <- as.formula(paste0(outcome, " ~", paste0(
+      c(predictor, variables, var_added), collapse = " + "
+    )))
+  }
+  return(model)
+}
+
+
+create_ever_var <- function(data, search_term, new_col_name) {
+  data <- data %>%
+    mutate(!!new_col_name := apply(data[, grepl(search_term, colnames(data))], 1, function(x) {any(x == 1)*1}))
+  data <- data %>%
+    mutate(!!new_col_name := ifelse((is.na(get(new_col_name)) &
+                                       (apply(data[, which(grepl(search_term, colnames(data)))], 1, function(x) {any(x == 0)}))), 0, get(new_col_name)))
+  return(data)
+}
