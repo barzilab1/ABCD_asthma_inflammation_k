@@ -14,6 +14,8 @@ library(dplyr)
 library(lme4)
 library(readr)
 library(sjPlot)
+
+source("../utility_fun.R")
 ```
 
 ```{r}
@@ -55,123 +57,112 @@ var_mod_3 <- c(
   "scale(reshist_addr1_pm25)",
   "scale(reshist_addr1_proxrd)"
 )
-
-get_models <- function(outcome, predictor, variables, var_added = NULL) {
-  if (is.null(var_added)) {
-    model <- as.formula(paste0(outcome, " ~", paste0(c(
-      predictor, variables
-    ), collapse = " + ")))
-  } else {
-    model <- as.formula(paste0(outcome, " ~", paste0(
-      c(predictor, variables, var_added), collapse = " + "
-    )))
-  }
-  return(model)
-}
 ```
 
 # 3.1. Outcome suicide attempt - asthma
 ## 3.1.1. Asthma diagnosis
 ```{r}
-SA_diag_0 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", 
-                             variables = "(1 | site_id_l_br/rel_family_id)"), 
-                      family = binomial, data = data_wide, nAGQ = 0)
+# SA_diag_0 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", 
+#                              variables = "(1 | site_id_l_br/rel_family_id)"), 
+#                       family = binomial, data = data_wide, nAGQ = 0)
 
 SA_diag_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_1), 
                       family = binomial, data = data_wide, nAGQ = 0)
 
-SA_diag_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_2), 
-                      family = binomial, data = data_wide, nAGQ = 0)
+# SA_diag_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_2), 
+#                       family = binomial, data = data_wide, nAGQ = 0)
 
 SA_diag_3 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3), 
                       family = binomial, data = data_wide, nAGQ = 0)
 
-SA_diag_4 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
-                   family = binomial, data = data_wide, nAGQ = 0)
+# SA_diag_4 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+#                    family = binomial, data = data_wide, nAGQ = 0)
 
 SA_diag_5 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
                    family = binomial, data = data_wide, nAGQ = 0)
 
-comb_SA_diag_1 <- tab_model(SA_diag_0, SA_diag_1, SA_diag_2, SA_diag_3, SA_diag_4, SA_diag_5, show.intercept = F)
+# comb_SA_diag_1 <- tab_model(SA_diag_0, SA_diag_1, SA_diag_2, SA_diag_3, SA_diag_4, SA_diag_5, show.intercept = F)
+comb_SA_diag_1 <- tab_model(SA_diag_1, SA_diag_3, SA_diag_5, show.intercept = F, show.se = T, digits = 5)
 comb_SA_diag_1
 ```
 
 ## 3.1.2. Asthma attack
 ```{r}
-SA_attack_0 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", 
-                              variables = "(1 | site_id_l_br/rel_family_id)"), 
-                   family = binomial, data = data_wide, nAGQ = 0)
+# SA_attack_0 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", 
+#                               variables = "(1 | site_id_l_br/rel_family_id)"),
+#                    family = binomial, data = data_wide, nAGQ = 0)
 
 SA_attack_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_1), 
                    family = binomial, data = data_wide, nAGQ = 0)
 
-SA_attack_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_2), 
-                   family = binomial, data = data_wide, nAGQ = 0)
+# SA_attack_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_2), 
+#                    family = binomial, data = data_wide, nAGQ = 0)
 
 SA_attack_3 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3), 
                    family = binomial, data = data_wide, nAGQ = 0)
 
-SA_attack_4 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
-                   family = binomial, data = data_wide, nAGQ = 0)
+# SA_attack_4 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+#                    family = binomial, data = data_wide, nAGQ = 0)
 
 SA_attack_5 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
                    family = binomial, data = data_wide, nAGQ = 0)
 
-comb_SA_attack_1 <- tab_model(SA_attack_0, SA_attack_1, SA_attack_2, SA_attack_3, SA_attack_4, SA_attack_5, show.intercept = F)
+# comb_SA_attack_1 <- tab_model(SA_attack_0, SA_attack_1, SA_attack_2, SA_attack_3, SA_attack_4, SA_attack_5, show.intercept = F)
+comb_SA_attack_1 <- tab_model(SA_attack_1, SA_attack_3, SA_attack_5, show.intercept = F, show.se = T, digits = 5)
 comb_SA_attack_1
 ```
 
 ## 3.1.3. Asthma composite
 ```{r}
-SA_comp_0 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_composite_ever", 
-                              variables = "(1 | site_id_l_br/rel_family_id)"), 
-                   family = binomial, data = data_wide, nAGQ = 0)
-
-SA_comp_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_composite_ever", variables = var_mod_1), 
-                   family = binomial, data = data_wide, nAGQ = 0)
-
-SA_comp_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_composite_ever", variables = var_mod_2), 
-                   family = binomial, data = data_wide, nAGQ = 0)
-
-SA_comp_3 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_composite_ever", variables = var_mod_3), 
-                   family = binomial, data = data_wide, nAGQ = 0)
-
-SA_comp_4 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_composite_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
-                   family = binomial, data = data_wide, nAGQ = 0)
-
-SA_comp_5 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_composite_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
-                   family = binomial, data = data_wide, nAGQ = 0)
-
-comb_SA_comp_1 <- tab_model(SA_comp_0, SA_comp_1, SA_comp_2, SA_comp_3, SA_comp_4, SA_comp_5, show.intercept = F)
-comb_SA_comp_1
+# SA_comp_0 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_composite_ever", 
+#                               variables = "(1 | site_id_l_br/rel_family_id)"), 
+#                    family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SA_comp_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_composite_ever", variables = var_mod_1), 
+#                    family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SA_comp_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_composite_ever", variables = var_mod_2), 
+#                    family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SA_comp_3 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_composite_ever", variables = var_mod_3), 
+#                    family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SA_comp_4 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_composite_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+#                    family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SA_comp_5 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_composite_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
+#                    family = binomial, data = data_wide, nAGQ = 0)
+# 
+# comb_SA_comp_1 <- tab_model(SA_comp_0, SA_comp_1, SA_comp_2, SA_comp_3, SA_comp_4, SA_comp_5, show.intercept = F)
+# comb_SA_comp_1
 ```
 
 ## 3.1.4. Recently active asthma
 ```{r}
-SA_recent_active_0 <- glmer(get_models(outcome = "SA_y_ever", predictor = "recent_active_asthma_ever", 
-                              variables = "(1 | site_id_l_br/rel_family_id)"), 
-                   family = binomial, data = data_wide, nAGQ = 0)
-
-SA_recent_active_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "recent_active_asthma_ever", variables = var_mod_1), 
-                   family = binomial, data = data_wide, nAGQ = 0)
-
-SA_recent_active_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "recent_active_asthma_ever", variables = var_mod_2), 
-                   family = binomial, data = data_wide, nAGQ = 0)
-
-SA_recent_active_3 <- glmer(get_models(outcome = "SA_y_ever", predictor = "recent_active_asthma_ever", variables = var_mod_3), 
-                   family = binomial, data = data_wide, nAGQ = 0)
-
-SA_recent_active_4 <- glmer(get_models(outcome = "SA_y_ever", predictor = "recent_active_asthma_ever", 
-                                       variables = var_mod_3, var_added = "scale(CBCL_mean)"),
-                   family = binomial, data = data_wide, nAGQ = 0)
-
-SA_recent_active_5 <- glmer(get_models(outcome = "SA_y_ever", predictor = "recent_active_asthma_ever", 
-                                       variables = var_mod_3, var_added = "scale(BPM_mean)"),
-                   family = binomial, data = data_wide, nAGQ = 0)
-
-comb_SA_recent_active_1 <- tab_model(SA_recent_active_0, SA_recent_active_1, SA_recent_active_2, SA_recent_active_3, 
-                                     SA_recent_active_4, SA_recent_active_5, show.intercept = F)
-comb_SA_recent_active_1
+# SA_recent_active_0 <- glmer(get_models(outcome = "SA_y_ever", predictor = "recent_active_asthma_ever", 
+#                               variables = "(1 | site_id_l_br/rel_family_id)"), 
+#                    family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SA_recent_active_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "recent_active_asthma_ever", variables = var_mod_1), 
+#                    family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SA_recent_active_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "recent_active_asthma_ever", variables = var_mod_2), 
+#                    family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SA_recent_active_3 <- glmer(get_models(outcome = "SA_y_ever", predictor = "recent_active_asthma_ever", variables = var_mod_3), 
+#                    family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SA_recent_active_4 <- glmer(get_models(outcome = "SA_y_ever", predictor = "recent_active_asthma_ever", 
+#                                        variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+#                    family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SA_recent_active_5 <- glmer(get_models(outcome = "SA_y_ever", predictor = "recent_active_asthma_ever", 
+#                                        variables = var_mod_3, var_added = "scale(BPM_mean)"),
+#                    family = binomial, data = data_wide, nAGQ = 0)
+# 
+# comb_SA_recent_active_1 <- tab_model(SA_recent_active_0, SA_recent_active_1, SA_recent_active_2, SA_recent_active_3, 
+#                                      SA_recent_active_4, SA_recent_active_5, show.intercept = F)
+# comb_SA_recent_active_1
 ```
 
 ## 3.1.5. Total number of asthma attacks/Mean number of mediation and SA #asthma_num_attack_sum #Asthma_medications_2w_total_sum
@@ -198,102 +189,104 @@ tab_model(Noattack_mean_SA_wholepop_1, Noattack_mean_SA_wholepop_2, Nomedication
 # 4.1. Outcome suicide ideation - asthma
 ## 4.1.1. Asthma diagnosis
 ```{r}
-SI_diag_0 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", 
-                              variables = "(1 | site_id_l_br/rel_family_id)"), 
-                   family = binomial, data = data_wide, nAGQ = 0)
+# SI_diag_0 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", 
+#                               variables = "(1 | site_id_l_br/rel_family_id)"), 
+#                    family = binomial, data = data_wide, nAGQ = 0)
 
 SI_diag_1 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_1), 
                    family = binomial, data = data_wide, nAGQ = 0)
 
-SI_diag_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_2), 
-                   family = binomial, data = data_wide, nAGQ = 0)
+# SI_diag_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_2), 
+#                    family = binomial, data = data_wide, nAGQ = 0)
 
 SI_diag_3 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3), 
                    family = binomial, data = data_wide, nAGQ = 0)
 
-SI_diag_4 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
-                   family = binomial, data = data_wide, nAGQ = 0)
+# SI_diag_4 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+#                    family = binomial, data = data_wide, nAGQ = 0)
 
 SI_diag_5 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
                    family = binomial, data = data_wide, nAGQ = 0)
 
-comb_SI_diag_1 <- tab_model(SI_diag_0, SI_diag_1, SI_diag_2, SI_diag_3, SI_diag_4, SI_diag_5, show.intercept = F)
+# comb_SI_diag_1 <- tab_model(SI_diag_0, SI_diag_1, SI_diag_2, SI_diag_3, SI_diag_4, SI_diag_5, show.intercept = F)
+comb_SI_diag_1 <- tab_model(SI_diag_1, SI_diag_3, SI_diag_5, show.intercept = F, show.se = T, digits = 5)
 comb_SI_diag_1
 ```
 
 ## 4.1.2. Asthma attack
 ```{r}
-SI_attack_0 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", 
-                                variables = "(1 | site_id_l_br/rel_family_id)"), 
-                     family = binomial, data = data_wide, nAGQ = 0)
+# SI_attack_0 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", 
+#                                 variables = "(1 | site_id_l_br/rel_family_id)"), 
+#                      family = binomial, data = data_wide, nAGQ = 0)
 
 SI_attack_1 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_1), 
                      family = binomial, data = data_wide, nAGQ = 0)
 
-SI_attack_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_2), 
-                     family = binomial, data = data_wide, nAGQ = 0)
+# SI_attack_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_2), 
+#                      family = binomial, data = data_wide, nAGQ = 0)
 
 SI_attack_3 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3), 
                      family = binomial, data = data_wide, nAGQ = 0)
 
-SI_attack_4 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
-                     family = binomial, data = data_wide, nAGQ = 0)
+# SI_attack_4 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+#                      family = binomial, data = data_wide, nAGQ = 0)
 
 SI_attack_5 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
                      family = binomial, data = data_wide, nAGQ = 0)
 
-comb_SI_attack_1 <- tab_model(SI_attack_0, SI_attack_1, SI_attack_2, SI_attack_3, SI_attack_4, SI_attack_5, show.intercept = F)
+# comb_SI_attack_1 <- tab_model(SI_attack_0, SI_attack_1, SI_attack_2, SI_attack_3, SI_attack_4, SI_attack_5, show.intercept = F)
+comb_SI_attack_1 <- tab_model(SI_attack_1, SI_attack_3, SI_attack_5, show.intercept = F, show.se = T, digits = 5)
 comb_SI_attack_1
 ```
 
 ## 4.1.3. Asthma composite
 ```{r}
-SI_comp_0 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_composite_ever", 
-                              variables = "(1 | site_id_l_br/rel_family_id)"), 
-                   family = binomial, data = data_wide, nAGQ = 0)
-
-SI_comp_1 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_composite_ever", variables = var_mod_1), 
-                   family = binomial, data = data_wide, nAGQ = 0)
-
-SI_comp_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_composite_ever", variables = var_mod_2), 
-                   family = binomial, data = data_wide, nAGQ = 0)
-
-SI_comp_3 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_composite_ever", variables = var_mod_3), 
-                   family = binomial, data = data_wide, nAGQ = 0)
-
-SI_comp_4 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_composite_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
-                   family = binomial, data = data_wide, nAGQ = 0)
-
-SI_comp_5 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_composite_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
-                   family = binomial, data = data_wide, nAGQ = 0)
-
-comb_SI_comp_1 <- tab_model(SI_comp_0, SI_comp_1, SI_comp_2, SI_comp_3, SI_comp_4, SI_comp_5, show.intercept = F)
-comb_SI_comp_1
+# SI_comp_0 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_composite_ever", 
+#                               variables = "(1 | site_id_l_br/rel_family_id)"), 
+#                    family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SI_comp_1 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_composite_ever", variables = var_mod_1), 
+#                    family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SI_comp_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_composite_ever", variables = var_mod_2), 
+#                    family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SI_comp_3 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_composite_ever", variables = var_mod_3), 
+#                    family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SI_comp_4 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_composite_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+#                    family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SI_comp_5 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_composite_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
+#                    family = binomial, data = data_wide, nAGQ = 0)
+# 
+# comb_SI_comp_1 <- tab_model(SI_comp_0, SI_comp_1, SI_comp_2, SI_comp_3, SI_comp_4, SI_comp_5, show.intercept = F)
+# comb_SI_comp_1
 ```
 
 ## 4.1.4. Recently active asthma
 ```{r}
-SI_recent_active_0 <- glmer(get_models(outcome = "SI_y_ever", predictor = "recent_active_asthma_ever", 
-                                       variables = "(1 | site_id_l_br/rel_family_id)"), 
-                            family = binomial, data = data_wide, nAGQ = 0)
-
-SI_recent_active_1 <- glmer(get_models(outcome = "SI_y_ever", predictor = "recent_active_asthma_ever", variables = var_mod_1), 
-                            family = binomial, data = data_wide, nAGQ = 0)
-
-SI_recent_active_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "recent_active_asthma_ever", variables = var_mod_2), 
-                            family = binomial, data = data_wide, nAGQ = 0)
-
-SI_recent_active_3 <- glmer(get_models(outcome = "SI_y_ever", predictor = "recent_active_asthma_ever", variables = var_mod_3), 
-                            family = binomial, data = data_wide, nAGQ = 0)
-
-SI_recent_active_4 <- glmer(get_models(outcome = "SI_y_ever", predictor = "recent_active_asthma_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
-                            family = binomial, data = data_wide, nAGQ = 0)
-
-SI_recent_active_5 <- glmer(get_models(outcome = "SI_y_ever", predictor = "recent_active_asthma_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
-                            family = binomial, data = data_wide, nAGQ = 0)
-
-comb_SI_recent_active_1 <- tab_model(SI_recent_active_0, SI_recent_active_1, SI_recent_active_2, SI_recent_active_3, SI_recent_active_4, SI_recent_active_5, show.intercept = F)
-comb_SI_recent_active_1
+# SI_recent_active_0 <- glmer(get_models(outcome = "SI_y_ever", predictor = "recent_active_asthma_ever", 
+#                                        variables = "(1 | site_id_l_br/rel_family_id)"), 
+#                             family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SI_recent_active_1 <- glmer(get_models(outcome = "SI_y_ever", predictor = "recent_active_asthma_ever", variables = var_mod_1), 
+#                             family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SI_recent_active_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "recent_active_asthma_ever", variables = var_mod_2), 
+#                             family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SI_recent_active_3 <- glmer(get_models(outcome = "SI_y_ever", predictor = "recent_active_asthma_ever", variables = var_mod_3), 
+#                             family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SI_recent_active_4 <- glmer(get_models(outcome = "SI_y_ever", predictor = "recent_active_asthma_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+#                             family = binomial, data = data_wide, nAGQ = 0)
+# 
+# SI_recent_active_5 <- glmer(get_models(outcome = "SI_y_ever", predictor = "recent_active_asthma_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
+#                             family = binomial, data = data_wide, nAGQ = 0)
+# 
+# comb_SI_recent_active_1 <- tab_model(SI_recent_active_0, SI_recent_active_1, SI_recent_active_2, SI_recent_active_3, SI_recent_active_4, SI_recent_active_5, show.intercept = F)
+# comb_SI_recent_active_1
 ```
 
 ## 4.1.5. Total number of asthma attacks/Mean number of mediation and SA #asthma_num_attack_sum #Asthma_medications_2w_total_sum
@@ -351,4 +344,625 @@ recent_active_med_1 <- lmer(get_models(outcome = "Asthma_medications_2w_total_su
 
 tab_model(recent_active_med_0, recent_active_med_1, show.intercept = F)
 ```
+
+```{r}
+# diagnosis
+diag_med_0 <- glmer(get_models(outcome = "asthma_diagnosis_l_ever", predictor = "Asthma_medications_2w_total_mean",  #Asthma_medications_2w_total_mean
+                              variables = "(1 | site_id_l_br/rel_family_id)"), data = data_wide, family = binomial, nAGQ = 0)
+
+diag_med_1 <- glmer(get_models(outcome = "asthma_diagnosis_l_ever", predictor = "Asthma_medications_2w_total_mean", 
+                              variables = var_mod_1), data = data_wide, family = binomial, nAGQ = 0)
+
+tab_model(diag_med_0, diag_med_1, show.intercept = F)
+
+
+# attack
+attack_med_0 <- glmer(get_models(outcome = "asthma_attack_l_ever", predictor = "Asthma_medications_2w_total_mean", 
+                                variables = "(1 | site_id_l_br/rel_family_id)"), data = data_wide, family = binomial)
+
+attack_med_1 <- glmer(get_models(outcome = "asthma_attack_l_ever", predictor = "Asthma_medications_2w_total_mean", 
+                                variables = var_mod_1), data = data_wide, family = binomial)
+
+tab_model(attack_med_0, attack_med_1, show.intercept = F)
+
+
+# composite # include medication # no models
+
+
+# recent active asthma
+recent_active_med_0 <- glmer(get_models(outcome = "recent_active_asthma_ever", predictor = "Asthma_medications_2w_total_mean", 
+                                       variables = "(1 | site_id_l_br/rel_family_id)"), data = data_wide, family = binomial)
+
+recent_active_med_1 <- glmer(get_models(outcome = "recent_active_asthma_ever", predictor = "Asthma_medications_2w_total_mean", 
+                                       variables = var_mod_1), data = data_wide, family = binomial)
+
+tab_model(recent_active_med_0, recent_active_med_1, show.intercept = F)
+```
+
+# 6. Broken bones
+```{r}
+brokenbones_SI_0 <- glmer(get_models(outcome = "SI_y_ever", predictor = "medhx_6a_l_ever",
+                                         variables = "(1 | site_id_l_br/rel_family_id)"), 
+                              family = binomial, data = data_wide, nAGQ = 0)
+
+brokenbones_SI_1 <- glmer(get_models(outcome = "SI_y_ever", predictor = "medhx_6a_l_ever",
+                                         variables = var_mod_1), 
+                              family = binomial, data = data_wide, nAGQ = 0)
+
+brokenbones_SA_0 <- glmer(get_models(outcome = "SA_y_ever", predictor = "medhx_6a_l_ever",
+                                         variables = "(1 | site_id_l_br/rel_family_id)"), 
+                              family = binomial, data = data_wide, nAGQ = 0)
+
+brokenbones_SA_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "medhx_6a_l_ever",
+                                         variables = var_mod_1), 
+                              family = binomial, data = data_wide, nAGQ = 0)
+
+tab_model(brokenbones_SI_0, brokenbones_SI_1)
+tab_model(brokenbones_SA_0, brokenbones_SA_1)
+```
+
+# 7. Covary for medications
+## 7.1. Outcome suicide ideation - asthma
+### 7.1.1. Asthma diagnosis - Systemic_steroids_class_H02_2w_ever
+```{r}
+SI_diag_0 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                              variables = "(1 | site_id_l_br/rel_family_id)"), 
+                   family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_1 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_1), 
+                   family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_2), 
+                   family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_3 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3), 
+                   family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_4 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+                   family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_5 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
+                   family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_02 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                               variables = c("(1 | site_id_l_br/rel_family_id)", "Systemic_steroids_class_H02_2w_ever")), 
+                    family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_12 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                               variables = var_mod_1, var_added = "Systemic_steroids_class_H02_2w_ever"),
+                    family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_32 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                               variables = var_mod_3, var_added = "Systemic_steroids_class_H02_2w_ever"),
+                    family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_52 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, 
+                               var_added = c("scale(BPM_mean)", "Systemic_steroids_class_H02_2w_ever")),
+                    family = binomial, data = data_wide, nAGQ = 0)
+
+# comb_SI_diag_1 <- tab_model(SI_diag_1, SI_diag_3, SI_diag_5, show.intercept = F, show.se = T, digits = 5)
+# comb_SI_diag_1 <- 
+#   tab_model(SI_diag_02, SI_diag_1, SI_diag_12, SI_diag_3, SI_diag_32, SI_diag_5, SI_diag_52, show.intercept = F, show.se = T, digits = 5)
+
+comb_SI_diag_1 <- 
+  tab_model(SI_diag_12, SI_diag_32, SI_diag_52, show.intercept = F, show.se = T, digits = 5)
+comb_SI_diag_1
+```
+
+## 4.1.2. Asthma attack - Systemic_steroids_class_H02_2w_ever
+```{r}
+SI_attack_steroid_0 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", 
+                                variables = "(1 | site_id_l_br/rel_family_id)"), 
+                     family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_steroid_1 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_1), 
+                     family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_steroid_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_2), 
+                     family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_steroid_3 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3), 
+                     family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_steroid_4 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+                     family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_steroid_5 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
+                     family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_steroid_02 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", 
+                                 variables = c("(1 | site_id_l_br/rel_family_id)", "Systemic_steroids_class_H02_2w_ever")), 
+                      family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_steroid_12 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", 
+                                 variables = var_mod_1, var_added = "Systemic_steroids_class_H02_2w_ever"),
+                      family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_steroid_32 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", 
+                                 variables = var_mod_3, var_added = "Systemic_steroids_class_H02_2w_ever"),
+                      family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_steroid_52 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, 
+                                 var_added = c("scale(BPM_mean)", "Systemic_steroids_class_H02_2w_ever")),
+                      family = binomial, data = data_wide, nAGQ = 0)
+
+# comb_SI_attack_steroid_1 <- tab_model(SI_attack_steroid_0, SI_attack_steroid_1, SI_attack_steroid_2, SI_attack_steroid_3, SI_attack_steroid_4, SI_attack_steroid_5, show.intercept = F)
+# comb_SI_attack_steroid_1 <- 
+#   tab_model(SI_attack_steroid_02, SI_attack_steroid_1, SI_attack_steroid_12, SI_attack_steroid_3, SI_attack_steroid_32, SI_attack_steroid_5, SI_attack_steroid_52, show.intercept = F, show.se = T, digits = 5)
+
+comb_SI_attack_steroid_1 <- 
+  tab_model(SI_attack_steroid_12, SI_attack_steroid_32, SI_attack_steroid_52, show.intercept = F, show.se = T, digits = 5)
+comb_SI_attack_steroid_1
+```
+
+# All meds listed as either SSRI or Other_antidepressants_anxiety
+```{r}
+data_wide <- 
+  create_ever_var(data = data_wide, search_term = "SSRI_2w_ever|Other_antidepressants_anxiety_2w_ever", new_col_name = "SSRI_antidepress")
+
+data_wide <- 
+  create_ever_var(data = data_wide, 
+                  search_term = "SSRI_2w_ever|Other_antidepressants_anxiety_2w_ever|Asthma_medications_2w_ever", 
+                  new_col_name = "SSRI_antidepress_asthmamed")
+
+
+# data_wide$SSRI_antidepress <- apply(data_wide[,grepl("SSRI_2w_ever|Other_antidepressants_anxiety_2w_ever", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
+# data_wide$SSRI_antidepress <- ifelse( (is.na(data_wide$SSRI_antidepress) &
+#                                                      (apply(data_wide[,which(grepl("SSRI_2w_ever|Other_antidepressants_anxiety_2w_ever", colnames(data_wide)))], 1, function(x) {any(x == 0)}))),
+#                                                   0, data_wide$SSRI_antidepress)
+```
+
+```{r}
+SI_diag_SSRI_antidepress_0 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                                                 variables = "(1 | site_id_l_br/rel_family_id)"), 
+                                      family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_SSRI_antidepress_1 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_1), 
+                                      family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_SSRI_antidepress_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_2), 
+                                      family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_SSRI_antidepress_3 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3), 
+                                      family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_SSRI_antidepress_4 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+                                      family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_SSRI_antidepress_5 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
+                                      family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_SSRI_antidepress_02 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                                                  variables = c("(1 | site_id_l_br/rel_family_id)", "SSRI_antidepress")), 
+                                       family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_SSRI_antidepress_12 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                                                  variables = var_mod_1, var_added = "SSRI_antidepress"),
+                                       family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_SSRI_antidepress_32 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                                                  variables = var_mod_3, var_added = "SSRI_antidepress"),
+                                       family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_SSRI_antidepress_52 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, 
+                                                  var_added = c("scale(BPM_mean)", "SSRI_antidepress")),
+                                       family = binomial, data = data_wide, nAGQ = 0)
+
+# comb_SI_diag_SSRI_antidepress_1 <- tab_model(SI_diag_SSRI_antidepress_0, SI_diag_SSRI_antidepress_1, SI_diag_SSRI_antidepress_2, SI_diag_SSRI_antidepress_3, SI_diag_SSRI_antidepress_4, SI_diag_SSRI_antidepress_5, show.intercept = F)
+# comb_SI_diag_SSRI_antidepress_1 <- 
+#   tab_model(SI_diag_SSRI_antidepress_02, SI_diag_SSRI_antidepress_1, SI_diag_SSRI_antidepress_12, SI_diag_SSRI_antidepress_3, SI_diag_SSRI_antidepress_32, SI_diag_SSRI_antidepress_5, SI_diag_SSRI_antidepress_52, show.intercept = F, show.se = T, digits = 5)
+
+comb_SI_diag_SSRI_antidepress_1 <- 
+  tab_model(SI_diag_SSRI_antidepress_12, SI_diag_SSRI_antidepress_32, SI_diag_SSRI_antidepress_52, show.intercept = F, show.se = T, digits = 5)
+
+comb_SI_diag_SSRI_antidepress_1
+```
+
+## 4.1.2. Asthma attack - SSRI_antidepress
+```{r}
+SI_attack_SSRI_antidepress_0 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", 
+                                variables = "(1 | site_id_l_br/rel_family_id)"), 
+                     family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_SSRI_antidepress_1 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_1), 
+                     family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_SSRI_antidepress_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_2), 
+                     family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_SSRI_antidepress_3 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3), 
+                     family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_SSRI_antidepress_4 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+                     family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_SSRI_antidepress_5 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
+                     family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_SSRI_antidepress_02 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", 
+                                 variables = c("(1 | site_id_l_br/rel_family_id)", "SSRI_antidepress")), 
+                      family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_SSRI_antidepress_12 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", 
+                                 variables = var_mod_1, var_added = "SSRI_antidepress"),
+                      family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_SSRI_antidepress_32 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", 
+                                 variables = var_mod_3, var_added = "SSRI_antidepress"),
+                      family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_SSRI_antidepress_52 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, 
+                                 var_added = c("scale(BPM_mean)", "SSRI_antidepress")),
+                      family = binomial, data = data_wide, nAGQ = 0)
+
+# comb_SI_attack_SSRI_antidepress_1 <- tab_model(SI_attack_SSRI_antidepress_0, SI_attack_SSRI_antidepress_1, SI_attack_SSRI_antidepress_2, SI_attack_SSRI_antidepress_3, SI_attack_SSRI_antidepress_4, SI_attack_SSRI_antidepress_5, show.intercept = F)
+# comb_SI_attack_SSRI_antidepress_1 <- 
+#   tab_model(SI_attack_SSRI_antidepress_02, SI_attack_SSRI_antidepress_1, SI_attack_SSRI_antidepress_12, SI_attack_SSRI_antidepress_3, SI_attack_SSRI_antidepress_32, SI_attack_SSRI_antidepress_5, SI_attack_SSRI_antidepress_52, show.intercept = F, show.se = T, digits = 5)
+
+comb_SI_attack_SSRI_antidepress_1 <- 
+  tab_model(SI_attack_SSRI_antidepress_12, SI_attack_SSRI_antidepress_32, SI_attack_SSRI_antidepress_52, show.intercept = F, show.se = T, digits = 5)
+
+comb_SI_attack_SSRI_antidepress_1
+```
+
+
+
+```{r}
+SI_diag_SSRI_antidepress_asthmamed_0 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                                               variables = "(1 | site_id_l_br/rel_family_id)"), 
+                                    family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_SSRI_antidepress_asthmamed_1 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_1), 
+                                    family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_SSRI_antidepress_asthmamed_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_2), 
+                                    family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_SSRI_antidepress_asthmamed_3 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3), 
+                                    family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_SSRI_antidepress_asthmamed_4 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+                                    family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_SSRI_antidepress_asthmamed_5 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
+                                    family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_SSRI_antidepress_asthmamed_02 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                                                variables = c("(1 | site_id_l_br/rel_family_id)", "SSRI_antidepress_asthmamed")), 
+                                     family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_SSRI_antidepress_asthmamed_12 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                                                variables = var_mod_1, var_added = "SSRI_antidepress_asthmamed"),
+                                     family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_SSRI_antidepress_asthmamed_32 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                                                variables = var_mod_3, var_added = "SSRI_antidepress_asthmamed"),
+                                     family = binomial, data = data_wide, nAGQ = 0)
+
+SI_diag_SSRI_antidepress_asthmamed_52 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, 
+                                                var_added = c("scale(BPM_mean)", "SSRI_antidepress_asthmamed")),
+                                     family = binomial, data = data_wide, nAGQ = 0)
+
+# comb_SI_diag_SSRI_antidepress_asthmamed_1 <- tab_model(SI_diag_SSRI_antidepress_asthmamed_0, SI_diag_SSRI_antidepress_asthmamed_1, SI_diag_SSRI_antidepress_asthmamed_2, SI_diag_SSRI_antidepress_asthmamed_3, SI_diag_SSRI_antidepress_asthmamed_4, SI_diag_SSRI_antidepress_asthmamed_5, show.intercept = F)
+# comb_SI_diag_SSRI_antidepress_asthmamed_1 <- 
+#   tab_model(SI_diag_SSRI_antidepress_asthmamed_02, SI_diag_SSRI_antidepress_asthmamed_1, SI_diag_SSRI_antidepress_asthmamed_12, SI_diag_SSRI_antidepress_asthmamed_3, SI_diag_SSRI_antidepress_asthmamed_32, SI_diag_SSRI_antidepress_asthmamed_5, SI_diag_SSRI_antidepress_asthmamed_52, show.intercept = F, show.se = T, digits = 5)
+
+comb_SI_diag_SSRI_antidepress_asthmamed_1 <- 
+  tab_model(SI_diag_SSRI_antidepress_asthmamed_12, SI_diag_SSRI_antidepress_asthmamed_32, SI_diag_SSRI_antidepress_asthmamed_52, show.intercept = F, show.se = T, digits = 5)
+
+
+comb_SI_diag_SSRI_antidepress_asthmamed_1
+```
+
+## 4.1.2. Asthma attack - SSRI_antidepress
+```{r}
+SI_attack_SSRI_antidepress_asthmamed_0 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", 
+                                                 variables = "(1 | site_id_l_br/rel_family_id)"), 
+                                      family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_SSRI_antidepress_asthmamed_1 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_1), 
+                                      family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_SSRI_antidepress_asthmamed_2 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_2), 
+                                      family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_SSRI_antidepress_asthmamed_3 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3), 
+                                      family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_SSRI_antidepress_asthmamed_4 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+                                      family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_SSRI_antidepress_asthmamed_5 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
+                                      family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_SSRI_antidepress_asthmamed_02 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", 
+                                                  variables = c("(1 | site_id_l_br/rel_family_id)", "SSRI_antidepress_asthmamed")), 
+                                       family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_SSRI_antidepress_asthmamed_12 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", 
+                                                  variables = var_mod_1, var_added = "SSRI_antidepress_asthmamed"),
+                                       family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_SSRI_antidepress_asthmamed_32 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", 
+                                                  variables = var_mod_3, var_added = "SSRI_antidepress_asthmamed"),
+                                       family = binomial, data = data_wide, nAGQ = 0)
+
+SI_attack_SSRI_antidepress_asthmamed_52 <- glmer(get_models(outcome = "SI_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, 
+                                                  var_added = c("scale(BPM_mean)", "SSRI_antidepress_asthmamed")),
+                                       family = binomial, data = data_wide, nAGQ = 0)
+
+# comb_SI_attack_SSRI_antidepress_asthmamed_1 <- tab_model(SI_attack_SSRI_antidepress_asthmamed_0, SI_attack_SSRI_antidepress_asthmamed_1, SI_attack_SSRI_antidepress_asthmamed_2, SI_attack_SSRI_antidepress_asthmamed_3, SI_attack_SSRI_antidepress_asthmamed_4, SI_attack_SSRI_antidepress_asthmamed_5, show.intercept = F)
+# comb_SI_attack_SSRI_antidepress_asthmamed_1 <- 
+#   tab_model(SI_attack_SSRI_antidepress_asthmamed_02, SI_attack_SSRI_antidepress_asthmamed_1, SI_attack_SSRI_antidepress_asthmamed_12, SI_attack_SSRI_antidepress_asthmamed_3, SI_attack_SSRI_antidepress_asthmamed_32, SI_attack_SSRI_antidepress_asthmamed_5, SI_attack_SSRI_antidepress_asthmamed_52, show.intercept = F, show.se = T, digits = 5)
+
+comb_SI_attack_SSRI_antidepress_asthmamed_1 <- 
+  tab_model(SI_attack_SSRI_antidepress_asthmamed_12, SI_attack_SSRI_antidepress_asthmamed_32, SI_attack_SSRI_antidepress_asthmamed_52, show.intercept = F, show.se = T, digits = 5)
+
+comb_SI_attack_SSRI_antidepress_asthmamed_1
+```
+
+## 7.1. Outcome suicide attempt - asthma
+### 7.1.1. Asthma diagnosis - Systemic_steroids_class_H02_2w_ever
+```{r}
+SA_diag_0 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                              variables = "(1 | site_id_l_br/rel_family_id)"), 
+                   family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_1), 
+                   family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_2), 
+                   family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_3 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3), 
+                   family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_4 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+                   family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_5 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
+                   family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_02 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                               variables = c("(1 | site_id_l_br/rel_family_id)", "Systemic_steroids_class_H02_2w_ever")), 
+                    family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_12 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                               variables = var_mod_1, var_added = "Systemic_steroids_class_H02_2w_ever"),
+                    family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_32 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                               variables = var_mod_3, var_added = "Systemic_steroids_class_H02_2w_ever"),
+                    family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_52 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, 
+                               var_added = c("scale(BPM_mean)", "Systemic_steroids_class_H02_2w_ever")),
+                    family = binomial, data = data_wide, nAGQ = 0)
+
+# comb_SA_diag_1 <- tab_model(SA_diag_1, SA_diag_3, SA_diag_5, show.intercept = F, show.se = T, digits = 5)
+comb_SA_diag_1 <- 
+  tab_model(SA_diag_12, SA_diag_32, SA_diag_52, show.intercept = F, show.se = T, digits = 5)
+comb_SA_diag_1
+```
+
+## 4.1.2. Asthma attack - Systemic_steroids_class_H02_2w_ever
+```{r}
+SA_attack_steroid_0 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", 
+                                        variables = "(1 | site_id_l_br/rel_family_id)"), 
+                             family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_steroid_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_1), 
+                             family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_steroid_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_2), 
+                             family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_steroid_3 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3), 
+                             family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_steroid_4 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+                             family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_steroid_5 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
+                             family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_steroid_02 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", 
+                                         variables = c("(1 | site_id_l_br/rel_family_id)", "Systemic_steroids_class_H02_2w_ever")), 
+                              family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_steroid_12 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", 
+                                         variables = var_mod_1, var_added = "Systemic_steroids_class_H02_2w_ever"),
+                              family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_steroid_32 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", 
+                                         variables = var_mod_3, var_added = "Systemic_steroids_class_H02_2w_ever"),
+                              family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_steroid_52 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, 
+                                         var_added = c("scale(BPM_mean)", "Systemic_steroids_class_H02_2w_ever")),
+                              family = binomial, data = data_wide, nAGQ = 0)
+
+# comb_SA_attack_steroid_1 <- tab_model(SA_attack_steroid_0, SA_attack_steroid_1, SA_attack_steroid_2, SA_attack_steroid_3, SA_attack_steroid_4, SA_attack_steroid_5, show.intercept = F)
+comb_SA_attack_steroid_1 <- 
+  tab_model(SA_attack_steroid_12, SA_attack_steroid_32, SA_attack_steroid_52, show.intercept = F, show.se = T, digits = 5)
+comb_SA_attack_steroid_1
+```
+
+
+```{r}
+SA_diag_SSRI_antidepress_0 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                                               variables = "(1 | site_id_l_br/rel_family_id)"), 
+                                    family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_SSRI_antidepress_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_1), 
+                                    family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_SSRI_antidepress_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_2), 
+                                    family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_SSRI_antidepress_3 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3), 
+                                    family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_SSRI_antidepress_4 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+                                    family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_SSRI_antidepress_5 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
+                                    family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_SSRI_antidepress_02 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                                                variables = c("(1 | site_id_l_br/rel_family_id)", "SSRI_antidepress")), 
+                                     family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_SSRI_antidepress_12 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                                                variables = var_mod_1, var_added = "SSRI_antidepress"),
+                                     family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_SSRI_antidepress_32 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                                                variables = var_mod_3, var_added = "SSRI_antidepress"),
+                                     family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_SSRI_antidepress_52 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, 
+                                                var_added = c("scale(BPM_mean)", "SSRI_antidepress")),
+                                     family = binomial, data = data_wide, nAGQ = 0)
+
+# comb_SA_diag_SSRI_antidepress_1 <- tab_model(SA_diag_SSRI_antidepress_0, SA_diag_SSRI_antidepress_1, SA_diag_SSRI_antidepress_2, SA_diag_SSRI_antidepress_3, SA_diag_SSRI_antidepress_4, SA_diag_SSRI_antidepress_5, show.intercept = F)
+comb_SA_diag_SSRI_antidepress_1 <- 
+  tab_model(SA_diag_SSRI_antidepress_12, SA_diag_SSRI_antidepress_32, SA_diag_SSRI_antidepress_52, show.intercept = F, show.se = T, digits = 5)
+comb_SA_diag_SSRI_antidepress_1
+```
+
+## 4.1.2. Asthma attack - SSRI_antidepress
+```{r}
+SA_attack_SSRI_antidepress_0 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", 
+                                                 variables = "(1 | site_id_l_br/rel_family_id)"), 
+                                      family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_SSRI_antidepress_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_1), 
+                                      family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_SSRI_antidepress_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_2), 
+                                      family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_SSRI_antidepress_3 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3), 
+                                      family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_SSRI_antidepress_4 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+                                      family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_SSRI_antidepress_5 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
+                                      family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_SSRI_antidepress_02 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", 
+                                                  variables = c("(1 | site_id_l_br/rel_family_id)", "SSRI_antidepress")), 
+                                       family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_SSRI_antidepress_12 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", 
+                                                  variables = var_mod_1, var_added = "SSRI_antidepress"),
+                                       family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_SSRI_antidepress_32 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", 
+                                                  variables = var_mod_3, var_added = "SSRI_antidepress"),
+                                       family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_SSRI_antidepress_52 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, 
+                                                  var_added = c("scale(BPM_mean)", "SSRI_antidepress")),
+                                       family = binomial, data = data_wide, nAGQ = 0)
+
+# comb_SA_attack_SSRI_antidepress_1 <- tab_model(SA_attack_SSRI_antidepress_0, SA_attack_SSRI_antidepress_1, SA_attack_SSRI_antidepress_2, SA_attack_SSRI_antidepress_3, SA_attack_SSRI_antidepress_4, SA_attack_SSRI_antidepress_5, show.intercept = F)
+comb_SA_attack_SSRI_antidepress_1 <- 
+  tab_model(SA_attack_SSRI_antidepress_12, SA_attack_SSRI_antidepress_32, SA_attack_SSRI_antidepress_52, show.intercept = F, show.se = T, digits = 5)
+comb_SA_attack_SSRI_antidepress_1
+```
+
+
+
+```{r}
+SA_diag_SSRI_antidepress_asthmamed_0 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                                                         variables = "(1 | site_id_l_br/rel_family_id)"), 
+                                              family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_SSRI_antidepress_asthmamed_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_1), 
+                                              family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_SSRI_antidepress_asthmamed_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_2), 
+                                              family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_SSRI_antidepress_asthmamed_3 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3), 
+                                              family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_SSRI_antidepress_asthmamed_4 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+                                              family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_SSRI_antidepress_asthmamed_5 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
+                                              family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_SSRI_antidepress_asthmamed_02 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                                                          variables = c("(1 | site_id_l_br/rel_family_id)", "SSRI_antidepress_asthmamed")), 
+                                               family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_SSRI_antidepress_asthmamed_12 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                                                          variables = var_mod_1, var_added = "SSRI_antidepress_asthmamed"),
+                                               family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_SSRI_antidepress_asthmamed_32 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", 
+                                                          variables = var_mod_3, var_added = "SSRI_antidepress_asthmamed"),
+                                               family = binomial, data = data_wide, nAGQ = 0)
+
+SA_diag_SSRI_antidepress_asthmamed_52 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_diagnosis_l_ever", variables = var_mod_3, 
+                                                          var_added = c("scale(BPM_mean)", "SSRI_antidepress_asthmamed")),
+                                               family = binomial, data = data_wide, nAGQ = 0)
+
+# comb_SA_diag_SSRI_antidepress_asthmamed_1 <- tab_model(SA_diag_SSRI_antidepress_asthmamed_0, SA_diag_SSRI_antidepress_asthmamed_1, SA_diag_SSRI_antidepress_asthmamed_2, SA_diag_SSRI_antidepress_asthmamed_3, SA_diag_SSRI_antidepress_asthmamed_4, SA_diag_SSRI_antidepress_asthmamed_5, show.intercept = F)
+comb_SA_diag_SSRI_antidepress_asthmamed_1 <- 
+  tab_model(SA_diag_SSRI_antidepress_asthmamed_12, SA_diag_SSRI_antidepress_asthmamed_32, SA_diag_SSRI_antidepress_asthmamed_52, show.intercept = F, show.se = T, digits = 5)
+comb_SA_diag_SSRI_antidepress_asthmamed_1
+```
+
+## 4.1.2. Asthma attack - SSRI_antidepress
+```{r}
+SA_attack_SSRI_antidepress_asthmamed_0 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", 
+                                                           variables = "(1 | site_id_l_br/rel_family_id)"), 
+                                                family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_SSRI_antidepress_asthmamed_1 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_1), 
+                                                family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_SSRI_antidepress_asthmamed_2 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_2), 
+                                                family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_SSRI_antidepress_asthmamed_3 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3), 
+                                                family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_SSRI_antidepress_asthmamed_4 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(CBCL_mean)"),
+                                                family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_SSRI_antidepress_asthmamed_5 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, var_added = "scale(BPM_mean)"),
+                                                family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_SSRI_antidepress_asthmamed_02 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", 
+                                                            variables = c("(1 | site_id_l_br/rel_family_id)", "SSRI_antidepress_asthmamed")), 
+                                                 family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_SSRI_antidepress_asthmamed_12 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", 
+                                                            variables = var_mod_1, var_added = "SSRI_antidepress_asthmamed"),
+                                                 family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_SSRI_antidepress_asthmamed_32 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", 
+                                                            variables = var_mod_3, var_added = "SSRI_antidepress_asthmamed"),
+                                                 family = binomial, data = data_wide, nAGQ = 0)
+
+SA_attack_SSRI_antidepress_asthmamed_52 <- glmer(get_models(outcome = "SA_y_ever", predictor = "asthma_attack_l_ever", variables = var_mod_3, 
+                                                            var_added = c("scale(BPM_mean)", "SSRI_antidepress_asthmamed")),
+                                                 family = binomial, data = data_wide, nAGQ = 0)
+
+# comb_SA_attack_SSRI_antidepress_asthmamed_1 <- tab_model(SA_attack_SSRI_antidepress_asthmamed_0, SA_attack_SSRI_antidepress_asthmamed_1, SA_attack_SSRI_antidepress_asthmamed_2, SA_attack_SSRI_antidepress_asthmamed_3, SA_attack_SSRI_antidepress_asthmamed_4, SA_attack_SSRI_antidepress_asthmamed_5, show.intercept = F)
+comb_SA_attack_SSRI_antidepress_asthmamed_1 <- 
+  tab_model(SA_attack_SSRI_antidepress_asthmamed_12, SA_attack_SSRI_antidepress_asthmamed_32, SA_attack_SSRI_antidepress_asthmamed_52, show.intercept = F, show.se = T, digits = 5)
+comb_SA_attack_SSRI_antidepress_asthmamed_1
+```
+
+
+
+
+
 
