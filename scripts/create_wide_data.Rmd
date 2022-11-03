@@ -12,59 +12,74 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(dplyr)
 library(readr)
+source("../utility_fun.R")
 ```
 
 ```{r}
 data_wide <- read_csv("../outputs/asthma_inflammation_wide.csv")
+# data_wide <- asthma_inflammation_wide
 ```
 
 ```{r}
 # Create ever variables
-data_wide$asthma_diagnosis_l_ever <- apply(data_wide[,grepl("asthma_diagnosis_l", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
-data_wide$asthma_diagnosis_l_ever <- ifelse( (is.na(data_wide$asthma_diagnosis_l_ever) & 
-                                                     (apply(data_wide[,which(grepl("asthma_diagnosis_l", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
-                                                  0, data_wide$asthma_diagnosis_l_ever)
+data_wide <- create_ever_var(data = data_wide, search_term = "asthma_diagnosis_l", new_col_name = "asthma_diagnosis_l_ever")
 
-data_wide$asthma_attack_l_ever <- apply(data_wide[,grepl("asthma_attack_l", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
-data_wide$asthma_attack_l_ever <- ifelse( (is.na(data_wide$asthma_attack_l_ever) & 
-                                                     (apply(data_wide[,which(grepl("asthma_attack_l", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
-                                                  0, data_wide$asthma_attack_l_ever)
+# data_wide$asthma_diagnosis_l_ever <- apply(data_wide[,grepl("asthma_diagnosis_l", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
+# data_wide$asthma_diagnosis_l_ever <- ifelse( (is.na(data_wide$asthma_diagnosis_l_ever) & 
+#                                                      (apply(data_wide[,which(grepl("asthma_diagnosis_l", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
+#                                                   0, data_wide$asthma_diagnosis_l_ever)
 
-data_wide$asthma_composite_ever <- apply(data_wide[,grepl("asthma_composite", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
-data_wide$asthma_composite_ever <- ifelse( (is.na(data_wide$asthma_composite_ever) & 
-                                                     (apply(data_wide[,which(grepl("asthma_composite", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
-                                                  0, data_wide$asthma_composite_ever)
+data_wide <- create_ever_var(data = data_wide, search_term = "asthma_attack_l", new_col_name = "asthma_attack_l_ever")
 
-data_wide$recent_active_asthma_ever <- apply(data_wide[,grepl("recent_active_asthma", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
-data_wide$recent_active_asthma_ever <- ifelse( (is.na(data_wide$recent_active_asthma_ever) & 
-                                                     (apply(data_wide[,which(grepl("recent_active_asthma", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
-                                                  0, data_wide$recent_active_asthma_ever)
+# data_wide$asthma_attack_l_ever <- apply(data_wide[,grepl("asthma_attack_l", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
+# data_wide$asthma_attack_l_ever <- ifelse( (is.na(data_wide$asthma_attack_l_ever) & 
+#                                                      (apply(data_wide[,which(grepl("asthma_attack_l", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
+#                                                   0, data_wide$asthma_attack_l_ever)
 
-data_wide$Montelukast_2w_ever <- apply(data_wide[,grepl("Montelukast_2w__", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
-data_wide$Montelukast_2w_ever <- ifelse( (is.na(data_wide$Montelukast_2w_ever) & 
-                                                     (apply(data_wide[,which(grepl("Montelukast_2w__", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
-                                                  0, data_wide$Montelukast_2w_ever)
+# 
+# data_wide$asthma_composite_ever <- apply(data_wide[,grepl("asthma_composite", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
+# data_wide$asthma_composite_ever <- ifelse( (is.na(data_wide$asthma_composite_ever) & 
+#                                                      (apply(data_wide[,which(grepl("asthma_composite", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
+#                                                   0, data_wide$asthma_composite_ever)
 
-data_wide$Immune_modulators_2w_ever <- apply(data_wide[,grepl("Immune_modulators_2w__", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
-data_wide$Immune_modulators_2w_ever <- ifelse( (is.na(data_wide$Immune_modulators_2w_ever) & 
-                                                     (apply(data_wide[,which(grepl("Immune_modulators_2w__", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
-                                                  0, data_wide$Immune_modulators_2w_ever)
+# data_wide$recent_active_asthma_ever <- apply(data_wide[,grepl("recent_active_asthma", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
+# data_wide$recent_active_asthma_ever <- ifelse( (is.na(data_wide$recent_active_asthma_ever) & 
+#                                                      (apply(data_wide[,which(grepl("recent_active_asthma", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
+#                                                   0, data_wide$recent_active_asthma_ever)
 
-data_wide$Systemic_steroids_class_H02_2w_ever <- apply(data_wide[,grepl("Systemic_steroids_class_H02_2w__", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
-data_wide$Systemic_steroids_class_H02_2w_ever <- ifelse( (is.na(data_wide$Systemic_steroids_class_H02_2w_ever) & 
-                                                     (apply(data_wide[,which(grepl("Systemic_steroids_class_H02_2w__", colnames(data_wide)))], 1, 
-                                                            function(x) {any(x == 0)}))), 
-                                                  0, data_wide$Systemic_steroids_class_H02_2w_ever)
+# data_wide$Montelukast_2w_ever <- apply(data_wide[,grepl("Montelukast_2w__", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
+# data_wide$Montelukast_2w_ever <- ifelse( (is.na(data_wide$Montelukast_2w_ever) & 
+#                                                      (apply(data_wide[,which(grepl("Montelukast_2w__", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
+#                                                   0, data_wide$Montelukast_2w_ever)
 
-data_wide$Topical_steroids_2w_ever <- apply(data_wide[,grepl("Topical_steroids_2w__", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
-data_wide$Topical_steroids_2w_ever <- ifelse( (is.na(data_wide$Topical_steroids_2w_ever) & 
-                                                     (apply(data_wide[,which(grepl("Topical_steroids_2w__", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
-                                                  0, data_wide$Topical_steroids_2w_ever)
+# data_wide$Immune_modulators_2w_ever <- apply(data_wide[,grepl("Immune_modulators_2w__", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
+# data_wide$Immune_modulators_2w_ever <- ifelse( (is.na(data_wide$Immune_modulators_2w_ever) & 
+#                                                      (apply(data_wide[,which(grepl("Immune_modulators_2w__", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
+#                                                   0, data_wide$Immune_modulators_2w_ever)
 
-data_wide$medhx_6a_l_ever <- apply(data_wide[,grepl("medhx_6a_l__", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
-data_wide$medhx_6a_l_ever <- ifelse( (is.na(data_wide$medhx_6a_l_ever) & 
-                                                     (apply(data_wide[,which(grepl("medhx_6a_l__", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
-                                                  0, data_wide$medhx_6a_l_ever)
+data_wide <- create_ever_var(data = data_wide, search_term = "Systemic_steroids_class_H02_2w__", new_col_name = "Systemic_steroids_class_H02_2w_ever")
+
+# data_wide$Systemic_steroids_class_H02_2w_ever <- apply(data_wide[,grepl("Systemic_steroids_class_H02_2w__", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
+# data_wide$Systemic_steroids_class_H02_2w_ever <- ifelse( (is.na(data_wide$Systemic_steroids_class_H02_2w_ever) & 
+#                                                      (apply(data_wide[,which(grepl("Systemic_steroids_class_H02_2w__", colnames(data_wide)))], 1, 
+#                                                             function(x) {any(x == 0)}))), 
+#                                                   0, data_wide$Systemic_steroids_class_H02_2w_ever)
+
+# data_wide$Topical_steroids_2w_ever <- apply(data_wide[,grepl("Topical_steroids_2w__", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
+# data_wide$Topical_steroids_2w_ever <- ifelse( (is.na(data_wide$Topical_steroids_2w_ever) & 
+#                                                      (apply(data_wide[,which(grepl("Topical_steroids_2w__", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
+#                                                   0, data_wide$Topical_steroids_2w_ever)
+
+data_wide <- create_ever_var(data = data_wide, search_term = "medhx_6a_l__", new_col_name = "medhx_6a_l_ever")
+
+# data_wide$medhx_6a_l_ever <- apply(data_wide[,grepl("medhx_6a_l__", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
+# data_wide$medhx_6a_l_ever <- ifelse( (is.na(data_wide$medhx_6a_l_ever) & 
+#                                                      (apply(data_wide[,which(grepl("medhx_6a_l__", colnames(data_wide)))], 1, function(x) {any(x == 0)}))), 
+#                                                   0, data_wide$medhx_6a_l_ever)
+
+data_wide <- create_ever_var(data = data_wide, search_term = "SSRI_2w__", new_col_name = "SSRI_2w_ever")
+data_wide <- create_ever_var(data = data_wide, search_term = "Other_antidepressants_anxiety_2w__", new_col_name = "Other_antidepressants_anxiety_2w_ever")
+data_wide <- create_ever_var(data = data_wide, search_term = "Asthma_medications_2w__", new_col_name = "Asthma_medications_2w_ever")
 
 data_wide$medhx_ss_6l_times_p_l_ever <- apply(data_wide[,grepl("medhx_ss_6l_times_p_l", colnames(data_wide))],1 ,function(x) {any(x == 1)*1})
 
